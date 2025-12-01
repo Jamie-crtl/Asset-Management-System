@@ -3,10 +3,33 @@ import storage
 
 class AssetManager:
     def __init__(self):
-        self.assets = [] #may require changing later
+        self.assets = {} #may require changing later, currently using a dictionary
 
-    def create_new_asset(self, asset):
-        pass
+    def create_new_asset(self, asset_data):
+        asset_id = asset_data.get("asset_id")
+        if not asset_id:
+            return "error: missing asset_id"
+        if asset_id in self.assets:
+            return "duplicate asset_id"
+        try:
+            new_asset = Asset(
+                id = asset_data["asset_id"],
+                name = asset_data["name"],
+                category = asset_data["category"],
+                value = asset_data["value"],
+                status = asset_data["status"]
+            )
+        except KeyError as e:
+            return "missing required fields"
+
+        self.assets[asset_id] = new_asset
+        return new_asset
+
+
+
+
+
+
     def delete_asset(self, asset_id):
         pass
     def get_asset_by_id(self, asset_id):
