@@ -4,6 +4,7 @@ import storage
 class AssetManager:
     def __init__(self):
         self.assets = [] #may require changing later
+        self.assets = storage.load_assets() #Loads JSON file assets
         self.depreciation_rate = 0.0 #Required for set_depreciation_rate US
 
     def create_new_asset(self, asset):
@@ -16,9 +17,9 @@ class AssetManager:
         pass
     def list_assets(self):
         pass
-    def change_asset_status(self, asset_id, new_status, reason):
+    def change_asset_status(self, asset_id, new_status):
         pass
-    def record_reason_for_change(self, asset, old_status, new_status, reason):
+    def record_reason_for_change(self, asset_id, reason):
         pass
     def view_status_history(self, asset_id):
         pass
