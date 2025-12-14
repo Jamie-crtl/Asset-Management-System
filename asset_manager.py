@@ -184,7 +184,19 @@ class AssetManager:
         ]
 
     def filter_by_status(self, status: str):
-        pass
+        # Filter assets by valid status
+        s = (status or "").strip().lower()
+        if not s:
+            return []
+
+        if s not in Asset.ALLOWED_STATUSES:
+            return []
+
+        return [
+            asset for asset in self.assets.values()
+            if (asset.status or "").lower() == s
+        ]
+
     def sort_assets(self, by: str = "name", descending: bool = False):
         pass
     def filter_by_value_range(self, min_value: float, max_value: float):
