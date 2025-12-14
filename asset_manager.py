@@ -87,7 +87,40 @@ class AssetManager:
         return "Status updated successfully"
 
     def record_reason_for_change(self, asset_id, reason):
-        pass
+        if asset_id is None:
+            return "Valid asset_id is required"
+        if reason is None:
+            return "Valid reason is required"
+
+        asset_id = str(asset_id).strip()
+        reason = str(reason).strip()
+
+        if reason == "":
+            return "Valid reason is required"
+
+        assets = self.assets.values() if isinstance(self.assets, dict) else self.assets
+
+        asset = None
+        for a in assets:
+            if str(a.id).strip() == asset_id:
+                asset = a
+                break
+
+        if asset is None:
+            return "Asset not found"
+
+        if not asset.history:
+            return "No status change to add a reason for"
+
+        asset.history[-1]["reason"] = reason # Adds a reason to latest reason state
+
+        try:
+            storage.save_assets(list(self.assets.values()) if isinstance(self.assets, dict) else self.assets)
+        except Exception:
+            pass
+
+        return "Reason recorded successfully"
+
     def view_status_history(self, asset_id):
         pass
     def set_depreciation_rate(self, rate):
