@@ -170,7 +170,19 @@ class AssetManager:
         return results
 
     def filter_by_category(self, category: str):
-        pass
+        # Filter assets by valid category
+        c = (category or "").strip().lower()
+        if not c:
+            return []
+
+        if c not in Asset.ALLOWED_CATEGORIES:
+            return []
+
+        return [
+            asset for asset in self.assets.values()
+            if (asset.category or "").lower() == c
+        ]
+
     def filter_by_status(self, status: str):
         pass
     def sort_assets(self, by: str = "name", descending: bool = False):
