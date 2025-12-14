@@ -187,7 +187,40 @@ class AssetManager:
         pass
 
     def create_inventory_summary(self, assets):
-        pass
+        if not isinstance(assets, list):
+            return "Assets must be provided in a list"
+
+        summary = {}
+
+        for asset in assets:
+
+            if asset is None:
+                return "Asset not found"
+
+            if not hasattr(asset, "category") or not hasattr(asset, "status"):
+                return "Asset is missing category and/or status"
+
+            if not hasattr(asset, "value") or asset.value < 0:
+                return "Asset is missing value or has negative value"
+
+            category = asset.category
+            status = asset.status
+            value = asset.value
+
+            if category not in summary:
+                summary[category] = {}
+
+            if status not in summary[category]:
+                summary[category][status] = {
+                    "count": 0,
+                    "total_value": 0.0
+                }
+
+            summary[category][status]["count"] += 1
+            summary[category][status]["total_value"] += value
+
+        return summary
+
     def get_assets_per_user(self, asset_id, assets):
         pass
     def create_depreciation_comparison(self, assets):
