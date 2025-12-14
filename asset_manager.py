@@ -33,13 +33,17 @@ class AssetManager:
         self.depreciation_rate = 0.0 #Required for set_depreciation_rate US
 
     def delete_asset(self, asset_id):
-        pass
+        if asset_id not in self.assets:
+            return False
+        del self.assets[asset_id]
+        return True
+
     def get_asset_by_id(self, asset_id):
         if asset_id in self.assets:
             return self.assets[asset_id]
         else:
             return None
-        pass
+
     def update_asset_field(self, asset_id,field, new_data):
         pass
     def list_assets(self):
