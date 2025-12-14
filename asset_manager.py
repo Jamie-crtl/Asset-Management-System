@@ -272,7 +272,49 @@ class AssetManager:
         return asset_list
 
     def create_depreciation_comparison(self, assets):
-        pass
+        if not isinstance(assets, list):
+            return "Assets must be provided in a list"
+
+        report = []
+
+        for asset in assets:
+
+            # defensive programming
+            if asset is None:
+                return "Asset not found"
+
+            if not hasattr(asset, "history") or not hasattr(asset, "value"):
+                return "Asset is missing history and/or value"
+
+            if not asset.history:
+                return "No report history available"
+
+            original_value = asset.history[0]
+            current_value = asset.value
+
+            # defensive programming
+            if original_value <= 0 or current_value < 0:
+                return "Asset has no value"
+
+            # calculate percentage drop
+            depreciation = original_value - current_value
+            percentage_drop = (depreciation / original_value) * 100
+
+            # enter asset into depreciation comparison report
+            report.append({
+                "asset_id": asset.id,
+                "name": asset.name,
+                "category": asset.category,
+                "original_value": original_value,
+                "current_value": current_value,
+                "percentage_drop": round(percentage_drop, 2)
+            })
+
+        # sort report by % drop
+        report.sort(key=lambda x: x["percentage_drop"], reverse=True)
+
+        return report
+
     def log_crud_action(self, action, asset_id, user_id=None):
         pass
     def display_error_message(self, message):
