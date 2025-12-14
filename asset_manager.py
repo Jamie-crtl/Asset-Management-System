@@ -246,7 +246,31 @@ class AssetManager:
         return summary
 
     def get_assets_per_user(self, asset_id, assets):
-        pass
+        if not isinstance(assets, list):
+            return "Assets must be provided in a list"
+
+        asset_list = []
+
+        for asset in assets:
+
+            if asset is None:
+                return "Asset not found"
+
+            if not hasattr(asset, "assigned_to"):
+                return "Missing assignee"
+
+            assigned_user = asset.assigned_to if asset.assigned_to else "Unassigned"
+
+            asset_list.append({
+                "asset_id": asset.id,
+                "name": asset.name,
+                "category": asset.category,
+                "status": asset.status,
+                "assigned_to": assigned_user
+            })
+
+        return asset_list
+
     def create_depreciation_comparison(self, assets):
         pass
     def log_crud_action(self, action, asset_id, user_id=None):
