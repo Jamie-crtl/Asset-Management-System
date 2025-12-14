@@ -36,6 +36,28 @@ class AssetManager:
     def create_backup_on_exit(self):
         pass
 
+    def search_by_name(self, query: str):
+        pass
+    def filter_by_category(self, category: str):
+        pass
+    def filter_by_status(self, status: str):
+        pass
+    def sort_assets(self, by: str = "name", descending: bool = False):
+        pass
+    def filter_by_value_range(self, min_value: float, max_value: float):
+        pass
+    def assign_asset_to_user(self, asset_id: str, user: str):
+        pass
+    def unassign_asset(self, asset_id: str):
+        pass
+    def view_assets_by_user(self, user: str):
+        pass
+    def can_assign_asset(self, asset, user: str):
+        pass
+
+
+
+
 
 # NEED TO ADD ALL FUNCTIONS THAT WE WILL BE IMPLEMENTING
 # WE NEED THIS FOR THE REPORT AT THE END
