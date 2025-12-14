@@ -78,6 +78,24 @@ class AssetManager:
     def can_assign_asset(self, asset, user: str):
         pass
 
+    def create_inventory_summary(self, assets):
+        pass
+    def get_assets_per_user(self, asset_id, assets):
+        pass
+    def create_depreciation_comparison(self, assets):
+        pass
+    def log_crud_action(self, action, asset_id, user_id=None):
+        pass
+    def display_error_message(self, message):
+        pass
+    def recover_from_corrupt_file(self, filename):
+        pass
+    def run_text_menu(self):
+        pass
+    def config_file_support(self, config_file):
+        pass
+    def help_command(self):
+        pass
 
 
 
