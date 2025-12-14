@@ -17,7 +17,8 @@ class AssetManager:
                 name = asset_data["name"],
                 category = asset_data["category"],
                 value = asset_data["value"],
-                status = asset_data["status"]
+                status = asset_data["status"],
+                history = asset_data["history"]
             )
         except KeyError as e:
             return "missing required fields"
