@@ -7,11 +7,13 @@ class Asset:
             raise ValueError("Category must be one of the following values: property, vehicle, other")
         if status not in ALLOWED_STATUSES:
             raise ValueError("Status must be one of the following values: available, assigned, disposed")
+    def __init__(self, id, name, category, value, status, assigned_to = None, history = None):
         self.id = id
         self.name = name
         self.category = category # it , hardware , software
         self.value = value
         self.status = status
         self.assigned_to = assigned_to
+        self.history = history if history is not None else []
 
 # Need to update this with any other required fields later on

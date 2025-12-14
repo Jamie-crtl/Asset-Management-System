@@ -27,6 +27,9 @@ class AssetManager:
         self.assets[asset_id] = new_asset
         return new_asset
 
+        self.assets = [] #may require changing later
+        self.assets = storage.load_assets() #Loads JSON file assets
+        self.depreciation_rate = 0.0 #Required for set_depreciation_rate US
 
     def delete_asset(self, asset_id):
         pass
@@ -36,6 +39,46 @@ class AssetManager:
         pass
     def list_assets(self):
         pass
+    def change_asset_status(self, asset_id, new_status):
+        pass
+    def record_reason_for_change(self, asset_id, reason):
+        pass
+    def view_status_history(self, asset_id):
+        pass
+    def set_depreciation_rate(self, rate):
+        pass
+    def calculate_current_value(self, asset_id, years):
+        pass
+    def flag_low_value_assets(self, threshold):
+        pass
+    def export_assets_to_json(self, file_path):
+        pass
+    def import_assets_from_json(self, file_path):
+        pass
+    def create_backup_on_exit(self):
+        pass
+
+    def search_by_name(self, query: str):
+        pass
+    def filter_by_category(self, category: str):
+        pass
+    def filter_by_status(self, status: str):
+        pass
+    def sort_assets(self, by: str = "name", descending: bool = False):
+        pass
+    def filter_by_value_range(self, min_value: float, max_value: float):
+        pass
+    def assign_asset_to_user(self, asset_id: str, user: str):
+        pass
+    def unassign_asset(self, asset_id: str):
+        pass
+    def view_assets_by_user(self, user: str):
+        pass
+    def can_assign_asset(self, asset, user: str):
+        pass
+
+
+
 
 
 # NEED TO ADD ALL FUNCTIONS THAT WE WILL BE IMPLEMENTING
