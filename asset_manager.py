@@ -48,8 +48,44 @@ class AssetManager:
         pass
     def list_assets(self):
         pass
+
     def change_asset_status(self, asset_id, new_status):
-        pass
+        if asset_id is None:
+            return "Valid asset_id is required"
+        if new_status is None:
+            return "Valid status is required"
+
+        asset_id = str(asset_id).strip()
+        new_status = str(new_status).strip().lower()
+
+        if new_status not in Asset.ALLOWED_STATUSES:
+            return "Valid status is required"
+
+        assets = self.assets.values() if isinstance(self.assets, dict) else self.assets  # reads from self.assets
+
+        asset = None
+        for a in assets:
+            if str(a.id).strip() == asset_id:
+                asset = a
+                break
+
+        if asset is None:
+            return "Asset not found"
+
+        if asset.status == new_status:
+            return "Status already set"
+
+        old_status = asset.status
+        asset.status = new_status
+        asset.history.append({"from": old_status, "to": new_status})
+
+        try:
+            storage.save_assets(list(self.assets.values()) if isinstance(self.assets, dict) else self.assets)
+        except Exception:
+            pass
+
+        return "Status updated successfully"
+
     def record_reason_for_change(self, asset_id, reason):
         pass
     def view_status_history(self, asset_id):
