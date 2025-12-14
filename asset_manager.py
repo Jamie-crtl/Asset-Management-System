@@ -122,7 +122,27 @@ class AssetManager:
         return "Reason recorded successfully"
 
     def view_status_history(self, asset_id):
-        pass
+        if asset_id is None:
+            return "Valid asset_id is required."
+
+        asset_id = str(asset_id).strip()
+
+        assets = self.assets.values() if isinstance(self.assets, dict) else self.assets
+
+        asset = None
+        for a in assets:
+            if str(a.id).strip() == asset_id:
+                asset = a
+                break
+
+        if asset is None:
+            return "Asset not found"
+
+        if not asset.history:
+            return "No status history available"
+
+        return asset.history
+
     def set_depreciation_rate(self, rate):
         pass
     def calculate_current_value(self, asset_id, years):
