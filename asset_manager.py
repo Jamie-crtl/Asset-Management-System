@@ -21,13 +21,11 @@ class AssetManager:
             )
         except KeyError as e:
             return "missing required fields"
+        except Exception as e:
+            return str(e)
 
         self.assets[asset_id] = new_asset
         return new_asset
-
-
-
-
 
 
     def delete_asset(self, asset_id):
