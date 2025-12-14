@@ -35,6 +35,10 @@ class AssetManager:
     def delete_asset(self, asset_id):
         pass
     def get_asset_by_id(self, asset_id):
+        if asset_id in self.assets:
+            return self.assets[asset_id]
+        else:
+            return None
         pass
     def update_asset_field(self, asset_id,field, new_data):
         pass
