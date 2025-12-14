@@ -3,7 +3,9 @@ import storage
 #hello
 class AssetManager:
     def __init__(self):
-        self.assets = {} #may require changing later, currently using a dictionary
+        loaded_assets = storage.load_assets()  # this returns a LIST from storage.py
+        self.assets = {a.id: a for a in loaded_assets}  # convert to DICT for fast lookup
+        self.depreciation_rate = 0.0
 
     def create_new_asset(self, asset_data):
         asset_id = asset_data.get("asset_id")
@@ -28,9 +30,7 @@ class AssetManager:
         self.assets[asset_id] = new_asset
         return new_asset
 
-        self.assets = [] #may require changing later
-        self.assets = storage.load_assets() #Loads JSON file assets
-        self.depreciation_rate = 0.0 #Required for set_depreciation_rate US
+
 
     def delete_asset(self, asset_id):
         if asset_id not in self.assets:
@@ -157,7 +157,18 @@ class AssetManager:
         pass
 
     def search_by_name(self, query: str):
-        pass
+        # Case-insensitive substring search on asset name
+        q = (query or "").strip().lower()
+        if not q:
+            return []
+
+        results = []
+        for asset in self.assets.values():
+            if q in (asset.name or "").lower():
+                results.append(asset)
+
+        return results
+
     def filter_by_category(self, category: str):
         pass
     def filter_by_status(self, status: str):

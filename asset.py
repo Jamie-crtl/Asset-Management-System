@@ -2,6 +2,8 @@ class Asset:
     ALLOWED_CATEGORIES = {"property", "vehicle", "other"}
     ALLOWED_STATUSES = {"available", "assigned", "disposed"}
     def __init__(self, id, name, category, value, status, assigned_to = None, history = None):
+        category = str(category).strip().lower()
+        status = str(status).strip().lower()
 
         if category not in Asset.ALLOWED_CATEGORIES:
             raise ValueError("Category must be one of the following values: property, vehicle, other")
