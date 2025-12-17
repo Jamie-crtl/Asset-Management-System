@@ -144,7 +144,20 @@ class AssetManager:
         return asset.history
 
     def set_depreciation_rate(self, rate):
-        pass
+        if rate is None:
+            return "Valid rate is required"
+
+        try:
+            rate = float(rate)
+        except Exception:
+            return "Valid rate is required"
+
+        if rate < 0 or rate > 100:
+            return "Rate must be inbetween values 0 and 100" # needs to be a valid integer
+
+        self.depreciation_rate = rate / 100.0  # 0.0 – 1.0
+        return "Depreciation rate updated successfully"
+
     def calculate_current_value(self, asset_id, years):
         pass
     def flag_low_value_assets(self, threshold):
