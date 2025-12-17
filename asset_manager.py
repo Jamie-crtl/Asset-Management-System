@@ -159,7 +159,40 @@ class AssetManager:
         return "Depreciation rate updated successfully"
 
     def calculate_current_value(self, asset_id, years):
-        pass
+        if asset_id is None:
+            return "Valid asset_id is required"
+        if years is None:
+            return "Valid years is required"
+
+        asset_id = str(asset_id).strip()
+
+        try:
+            years = int(years)
+        except Exception:
+            return "Valid years is required"
+
+        if years < 0:
+            return "Years must be 0 or greater"
+
+        asset = self.assets.get(asset_id)
+        if asset is None:
+            return "Asset not found"
+
+        try:
+            base_value = float(asset.value)
+        except Exception:
+            return "Asset value is invalid"
+
+        if base_value < 0:
+            return "Asset value is invalid"
+
+        current_value = base_value * ((1 - self.depreciation_rate) ** years) # Depreciation calculation: value * (1 - rate)^years
+
+        if current_value < 0:
+            current_value = 0.0
+
+        return round(current_value, 2)
+
     def flag_low_value_assets(self, threshold):
         pass
     def export_assets_to_json(self, file_path):
