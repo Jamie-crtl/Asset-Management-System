@@ -194,7 +194,32 @@ class AssetManager:
         return round(current_value, 2)
 
     def flag_low_value_assets(self, threshold):
-        pass
+        if threshold is None:
+            return "Valid threshold is required"
+
+        try:
+            threshold = float(threshold)
+        except Exception:
+            return "Valid threshold is required"
+
+        if threshold < 0:
+            return "Threshold must be 0 or greater"
+
+        low_assets = []
+        for asset_id, asset in self.assets.items():
+            try:
+                v = float(asset.value)
+            except Exception:
+                continue  # continues even if invalid assets present
+
+            if v < threshold:
+                low_assets.append(asset_id)
+
+        if not low_assets:
+            return "No assets below threshold"
+
+        return low_assets
+
     def export_assets_to_json(self, file_path):
         pass
     def import_assets_from_json(self, file_path):
