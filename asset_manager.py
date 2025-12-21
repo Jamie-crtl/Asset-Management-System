@@ -1,5 +1,6 @@
 from asset import Asset
 import storage
+import datetime
 #hello
 class AssetManager:
     def __init__(self):
@@ -491,8 +492,24 @@ class AssetManager:
 
         return report
 
-    def log_crud_action(self, action, asset_id, user_id=None):
-        pass
+    def log_crud_action(self, action, asset_id):
+
+        if action not in ["CREATE", "READ", "UPDATE", "DELETE"]:
+            return self.display_error_message("Invalid CRUD action")
+
+        if asset_id is None:
+            return self.display_error_message("Asset not found")
+
+        # logs date and time of CRUD action
+        timestamp = datetime.datetime.now()
+
+        action_entry = f"{timestamp}, ID: {asset_id}, {action}\n"
+
+        with open("crud_log.txt", "a") as f:
+            f.write(action_entry)
+
+        return f"CRUD action successfully logged at {timestamp}"
+
     def display_error_message(self, message):
         pass
     def recover_from_corrupt_file(self, filename):
