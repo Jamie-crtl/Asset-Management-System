@@ -291,7 +291,30 @@ class AssetManager:
             return []
 
     def filter_by_value_range(self, min_value: float, max_value: float):
-        pass
+        # Convert inputs to numbers
+        try:
+            min_v = float(min_value)
+            max_v = float(max_value)
+        except (TypeError, ValueError):
+            return []
+
+        # Invalid range
+        if min_v > max_v:
+            return []
+
+        results = []
+
+        for asset in self.assets.values():
+            try:
+                value = float(asset.value)
+            except (TypeError, ValueError):
+                continue  # Skip assets with invalid values
+
+            if min_v <= value <= max_v:
+                results.append(asset)
+
+        return results
+
     def assign_asset_to_user(self, asset_id: str, user: str):
         pass
     def unassign_asset(self, asset_id: str):
