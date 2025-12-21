@@ -1,6 +1,7 @@
 from asset import Asset
 import storage
 import datetime
+import json
 #hello
 class AssetManager:
     def __init__(self):
@@ -514,8 +515,32 @@ class AssetManager:
         print(f"ERROR: {message}")
         return message
 
-    def recover_from_corrupt_file(self, filename):
-        pass
+    def recover_from_corrupt_file(self, filename, backup_file):
+        try:
+            with open(filename, "r") as f:
+                return json.load(f)
+
+        #detects JSON decode errors
+        except json.JSONDecodeError:
+            self.display_error_message("JSON file corrupted, loading backup")
+
+            #loads backup file
+            try:
+                with open(backup_file, "r") as f:
+                    return json.load(f)
+
+            #detects JSON decode errors
+            except json.JSONDecodeError:
+                return self.display_error_message("Backup file corrupted")
+
+            #checks for backup file existence
+            except FileNotFoundError:
+                return self.display_error_message("Backup file not found")
+
+        #checks for file existence
+        except FileNotFoundError:
+            return self.display_error_message("File not found")
+
     def run_text_menu(self):
         pass
     def config_file_support(self, config_file):
