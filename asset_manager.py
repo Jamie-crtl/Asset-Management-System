@@ -316,7 +316,40 @@ class AssetManager:
         return results
 
     def assign_asset_to_user(self, asset_id: str, user: str):
-        pass
+        # Basic input validation
+        if asset_id is None or user is None:
+            return False, "Valid asset_id and user are required"
+
+        asset_id = str(asset_id).strip()
+        user = str(user).strip()
+
+        if asset_id == "" or user == "":
+            return False, "Valid asset_id and user are required"
+
+        # Retrieve asset
+        asset = self.get_asset_by_id(asset_id)
+        if asset is None:
+            return False, "Asset not found"
+
+        # Business rules
+        if asset.status == "disposed":
+            return False, "Cannot assign a disposed asset"
+
+        if asset.assigned_to is not None:
+            return False, "Asset is already assigned"
+
+        # Perform assignment
+        asset.assigned_to = user
+        asset.status = "assigned"
+
+        # Save changes
+        try:
+            storage.save_assets(list(self.assets.values()))
+        except Exception:
+            pass
+
+        return True, "Asset assigned successfully"
+
     def unassign_asset(self, asset_id: str):
         pass
     def view_assets_by_user(self, user: str):
