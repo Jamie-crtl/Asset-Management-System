@@ -13,6 +13,8 @@ class AssetManager:
             return "error: missing asset_id"
         if asset_id in self.assets:
             return "duplicate asset_id"
+        if not self.validate_required_fields(asset_data):
+            return "error: missing required fields"
         try:
             new_asset = Asset(
                 id = asset_data["asset_id"],
@@ -63,6 +65,17 @@ class AssetManager:
             asset = self.assets[asset_id]
             lines.append(f"{asset_id}: {asset.name} {asset.category} {asset.value}")
         return "\n".join(lines)
+
+    def validate_required_fields(self, asset_data):
+        required_fields = ["name","category","value","status","assigned_to","history"]
+        for field in required_fields:
+            if field not in asset_data:
+                return False
+            if asset_data[field] is None:
+                return False
+            if asset_data[field] == "":
+                return False
+        return True
 
 
     def change_asset_status(self, asset_id, new_status):
