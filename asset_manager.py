@@ -45,7 +45,15 @@ class AssetManager:
             return None
 
     def update_asset_field(self, asset_id,field, new_data):
-        pass
+        if asset_id not in self.assets:
+            return False
+        asset = self.assets[asset_id]
+        allowed_fields = ["name","category","value","status","assigned_to","history"]
+        if field not in allowed_fields:
+            return False
+
+        setattr(asset, field, new_data)
+        return True
 
     def list_assets(self):
         if not self.assets:
