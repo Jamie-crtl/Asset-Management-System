@@ -269,7 +269,27 @@ class AssetManager:
         ]
 
     def sort_assets(self, by: str = "name", descending: bool = False):
-        pass
+        # Normalise sort field
+        by = (by or "").strip().lower()
+
+        # Choose how each asset is compared during sorting
+        if by == "name":
+            key_func = lambda a: (a.name or "").lower()
+        elif by == "value":
+            key_func = lambda a: float(a.value)
+        elif by == "category":
+            key_func = lambda a: (a.category or "").lower()
+        elif by == "status":
+            key_func = lambda a: (a.status or "").lower()
+        else:
+            return []  # Invalid sort field
+
+        # Sort and return assets
+        try:
+            return sorted(list(self.assets.values()), key=key_func, reverse=descending)
+        except Exception:
+            return []
+
     def filter_by_value_range(self, min_value: float, max_value: float):
         pass
     def assign_asset_to_user(self, asset_id: str, user: str):
