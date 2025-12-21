@@ -46,8 +46,16 @@ class AssetManager:
 
     def update_asset_field(self, asset_id,field, new_data):
         pass
+
     def list_assets(self):
-        pass
+        if not self.assets:
+            return "ERROR: NO ASSETS AVAILABLE"
+        lines = []
+        for asset_id in sorted(self.assets.keys()):
+            asset = self.assets[asset_id]
+            lines.append(f"{asset_id}: {asset.name} {asset.category} {asset.value}")
+        return "\n".join(lines)
+
 
     def change_asset_status(self, asset_id, new_status):
         if asset_id is None:
