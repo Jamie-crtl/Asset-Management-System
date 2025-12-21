@@ -511,7 +511,9 @@ class AssetManager:
         return f"CRUD action successfully logged at {timestamp}"
 
     def display_error_message(self, message):
-        pass
+        print(f"ERROR: {message}")
+        return message
+
     def recover_from_corrupt_file(self, filename):
         pass
     def run_text_menu(self):
