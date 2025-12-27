@@ -122,3 +122,48 @@ def test_us13_sort_invalid_field_returns_empty_list(monkeypatch):
 
     assert manager.sort_assets(by="invalid") == []
 
+
+def test_us14_filter_by_value_range_valid(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Laptop", "other", 900, "available"),
+        Asset("2", "Chair", "property", 80, "available"),
+        Asset("3", "Desk", "property", 200, "available"),
+    ])
+
+    results = manager.filter_by_value_range(100, 500)
+    names = [a.name for a in results]
+
+    assert "Desk" in names
+    assert "Laptop" not in names
+    assert "Chair" not in names
+
+
+def test_us14_filter_by_value_range_boundary_values(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Monitor", "other", 150, "available"),
+        Asset("2", "Keyboard", "other", 50, "available"),
+    ])
+
+    results = manager.filter_by_value_range(50, 150)
+    values = [a.value for a in results]
+
+    assert 50 in values
+    assert 150 in values
+
+
+def test_us14_filter_by_value_range_invalid_range(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Server", "other", 5000, "available"),
+    ])
+
+    # min > max should fail safely
+    assert manager.filter_by_value_range(1000, 100) == []
+
+
+def test_us14_filter_by_value_range_invalid_inputs(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Router", "other", 120, "available"),
+    ])
+
+    assert manager.filter_by_value_range("low", 500) == []
+    assert manager.filter_by_value_range(100, "high") == []
