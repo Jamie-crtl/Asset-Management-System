@@ -479,7 +479,21 @@ class AssetManager:
         return True, "Asset unassigned successfully"
 
     def view_assets_by_user(self, user: str):
-        pass
+        if user is None:
+            return []
+
+        u = str(user).strip().lower()
+        if u == "":
+            return []
+
+        results = []
+        for asset in self.assets.values():
+            if asset.assigned_to is None:
+                continue
+            if str(asset.assigned_to).strip().lower() == u:
+                results.append(asset)
+
+        return results
 
     def can_assign_asset(self, asset, user: str):
         if asset is None:
