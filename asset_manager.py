@@ -253,11 +253,11 @@ class AssetManager:
 
     def export_assets_to_json(self, file_path):
         if not file_path:
-            return "Valid file_path is required."
+            return "Valid file_path is required"
 
         file_path = str(file_path).strip()
         if file_path == "":
-            return "Valid file_path is required."
+            return "Valid file_path is required"
 
         data = []
         for a in self.assets.values():
@@ -277,7 +277,37 @@ class AssetManager:
         return "JSON Exported successfully"
 
     def import_assets_from_json(self, file_path):
-        pass
+        if not file_path:
+            return "Valid file_path is required"
+
+        file_path = str(file_path).strip()
+        if file_path == "":
+            return "Valid file_path is required"
+
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        imported = 0
+        for item in data:
+            asset_id = str(item.get("id", "")).strip()
+            if asset_id == "" or asset_id in self.assets:
+                continue
+
+            new_asset = Asset(
+                id=asset_id,
+                name=item.get("name", ""),
+                category=item.get("category", ""),
+                value=item.get("value", 0),
+                status=item.get("status", ""),
+                assigned_to=item.get("assigned_to"),
+                history=item.get("history", [])
+            )
+            self.assets[asset_id] = new_asset
+            imported += 1
+
+        storage.save_assets(list(self.assets.values())) # persist into storage file
+        return "Successfully imported assets"
+
     def create_backup_on_exit(self):
         pass
 
