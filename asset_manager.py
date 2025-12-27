@@ -252,7 +252,30 @@ class AssetManager:
         return low_assets
 
     def export_assets_to_json(self, file_path):
-        pass
+        if not file_path:
+            return "Valid file_path is required."
+
+        file_path = str(file_path).strip()
+        if file_path == "":
+            return "Valid file_path is required."
+
+        data = []
+        for a in self.assets.values():
+            data.append({
+                "id": a.id,
+                "name": a.name,
+                "category": a.category,
+                "value": a.value,
+                "status": a.status,
+                "assigned_to": a.assigned_to,
+                "history": a.history
+            })
+
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+
+        return "JSON Exported successfully"
+
     def import_assets_from_json(self, file_path):
         pass
     def create_backup_on_exit(self):
