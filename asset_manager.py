@@ -422,16 +422,19 @@ class AssetManager:
         if asset is None:
             return False, "Asset not found"
 
-        # Business rules
-        if asset.status == "disposed":
-            return False, "Cannot assign a disposed asset"
-
-        if asset.assigned_to is not None:
-            return False, "Asset is already assigned"
+        # Business rules (centralised)
+        allowed, message = self.can_assign_asset(asset, user)
+        if not allowed:
+            return False, message
 
         # Perform assignment
         asset.assigned_to = user
         asset.status = "assigned"
+        asset.history.append({
+            "action": "assign",
+            "user": user,
+            "timestamp": str(datetime.datetime.now())
+        })
 
         # Save changes
         try:
@@ -446,7 +449,25 @@ class AssetManager:
     def view_assets_by_user(self, user: str):
         pass
     def can_assign_asset(self, asset, user: str):
-        pass
+        if asset is None:
+            return False, "Asset not found"
+
+        u = (user or "").strip()
+        if u == "":
+            return False, "Valid user is required"
+
+        # Business rules
+        if asset.status == "disposed":
+            return False, "Cannot assign a disposed asset"
+
+        if asset.assigned_to is not None:
+            return False, "Asset is already assigned"
+
+        # if status is inconsistent, still block
+        if asset.status not in ["available"]:
+            return False, "Asset is not available for assignment"
+
+        return True, "OK"
 
     def create_inventory_summary(self, assets):
         if not isinstance(assets, list):
