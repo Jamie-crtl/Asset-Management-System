@@ -2,7 +2,8 @@ from asset import Asset
 import storage
 import datetime
 import json
-#hello
+import shutil
+
 class AssetManager:
     def __init__(self):
         loaded_assets = storage.load_assets()  # this returns a LIST from storage.py
@@ -309,7 +310,13 @@ class AssetManager:
         return "Successfully imported assets"
 
     def create_backup_on_exit(self):
-        pass
+        data_file = getattr(storage, "DATA_FILE", "assets.json")
+        backup_file = "assets_backup.json"
+
+        storage.save_assets(list(self.assets.values()))# Ensures storage file exists by saving current state
+
+        shutil.copyfile(data_file, backup_file)
+        return "Backup created successfully"
 
     def search_by_name(self, query: str):
         # Case-insensitive substring search on asset name
