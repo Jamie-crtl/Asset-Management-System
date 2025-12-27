@@ -71,3 +71,32 @@ def test_us13_loop_many_assets(monkeypatch):
     values = [a.value for a in results]
 
     assert values == [300, 400, 900]
+
+
+def test_us17_loop_zero_assets(monkeypatch):
+    manager = make_manager(monkeypatch, [])
+    assert manager.view_assets_by_user("alice") == []
+
+
+def test_us17_loop_one_asset_matches_user(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Laptop", "other", 900, "assigned", assigned_to="alice"),
+    ])
+
+    results = manager.view_assets_by_user("alice")
+    assert len(results) == 1
+    assert results[0].id == "1"
+
+
+def test_us17_loop_many_assets_mixed(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Laptop", "other", 900, "assigned", assigned_to="alice"),
+        Asset("2", "Car", "vehicle", 12000, "assigned", assigned_to="bob"),
+        Asset("3", "Desk", "property", 200, "available"),
+        Asset("4", "Phone", "other", 500, "assigned", assigned_to="alice"),
+    ])
+
+    results = manager.view_assets_by_user("alice")
+    ids = [a.id for a in results]
+
+    assert set(ids) == {"1", "4"}
