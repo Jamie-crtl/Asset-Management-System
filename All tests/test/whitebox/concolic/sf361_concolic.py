@@ -78,3 +78,47 @@ def test_us15_concolic_path_success(monkeypatch):
 
     assert success is True
     assert message == "Asset assigned successfully"
+
+
+def test_us18_concolic_path_asset_none(monkeypatch):
+    manager = make_manager(monkeypatch, [])
+
+    allowed, message = manager.can_assign_asset(None, "alice")
+    assert allowed is False
+    assert message == "Asset not found"
+
+
+def test_us18_concolic_path_empty_user(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Keyboard", "other", 40, "available"),
+    ])
+
+    asset = manager.get_asset_by_id("1")
+    allowed, message = manager.can_assign_asset(asset, "")
+
+    assert allowed is False
+    assert message == "Valid user is required"
+
+
+def test_us18_concolic_path_disposed(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Printer", "other", 100, "disposed"),
+    ])
+
+    asset = manager.get_asset_by_id("1")
+    allowed, message = manager.can_assign_asset(asset, "alice")
+
+    assert allowed is False
+    assert message == "Cannot assign a disposed asset"
+
+
+def test_us18_concolic_path_success(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Desk", "property", 200, "available"),
+    ])
+
+    asset = manager.get_asset_by_id("1")
+    allowed, message = manager.can_assign_asset(asset, "alice")
+
+    assert allowed is True
+    assert message == "OK"

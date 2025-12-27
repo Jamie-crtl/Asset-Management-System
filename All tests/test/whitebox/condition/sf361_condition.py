@@ -59,3 +59,59 @@ def test_us12_condition_valid_status(monkeypatch):
     assert len(results) == 1
     assert results[0].id == "2"
     assert results[0].status == "assigned"
+
+
+def test_us18_condition_asset_is_none(monkeypatch):
+    manager = make_manager(monkeypatch, [])
+
+    allowed, message = manager.can_assign_asset(None, "alice")
+    assert allowed is False
+    assert message == "Asset not found"
+
+
+def test_us18_condition_empty_user(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Laptop", "other", 900, "available"),
+    ])
+
+    asset = manager.get_asset_by_id("1")
+    allowed, message = manager.can_assign_asset(asset, "")
+
+    assert allowed is False
+    assert message == "Valid user is required"
+
+
+def test_us18_condition_disposed_asset(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Old PC", "other", 50, "disposed"),
+    ])
+
+    asset = manager.get_asset_by_id("1")
+    allowed, message = manager.can_assign_asset(asset, "alice")
+
+    assert allowed is False
+    assert message == "Cannot assign a disposed asset"
+
+
+def test_us18_condition_already_assigned(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Phone", "other", 500, "assigned", assigned_to="bob"),
+    ])
+
+    asset = manager.get_asset_by_id("1")
+    allowed, message = manager.can_assign_asset(asset, "alice")
+
+    assert allowed is False
+    assert message == "Asset is already assigned"
+
+
+def test_us18_condition_valid_assignment(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Monitor", "property", 150, "available"),
+    ])
+
+    asset = manager.get_asset_by_id("1")
+    allowed, message = manager.can_assign_asset(asset, "alice")
+
+    assert allowed is True
+    assert message == "OK"
