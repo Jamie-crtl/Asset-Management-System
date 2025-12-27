@@ -445,9 +445,42 @@ class AssetManager:
         return True, "Asset assigned successfully"
 
     def unassign_asset(self, asset_id: str):
-        pass
+        if asset_id is None:
+            return False, "Valid asset_id is required"
+
+        asset_id = str(asset_id).strip()
+        if asset_id == "":
+            return False, "Valid asset_id is required"
+
+        asset = self.get_asset_by_id(asset_id)
+        if asset is None:
+            return False, "Asset not found"
+
+        if asset.status == "disposed":
+            return False, "Cannot unassign a disposed asset"
+
+        if asset.assigned_to is None:
+            return False, "Asset is not assigned"
+
+        old_user = asset.assigned_to
+        asset.assigned_to = None
+        asset.status = "available"
+        asset.history.append({
+            "action": "unassign",
+            "user": old_user,
+            "timestamp": str(datetime.datetime.now())
+        })
+
+        try:
+            storage.save_assets(list(self.assets.values()))
+        except Exception:
+            pass
+
+        return True, "Asset unassigned successfully"
+
     def view_assets_by_user(self, user: str):
         pass
+
     def can_assign_asset(self, asset, user: str):
         if asset is None:
             return False, "Asset not found"
