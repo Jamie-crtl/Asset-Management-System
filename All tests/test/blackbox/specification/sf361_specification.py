@@ -87,3 +87,38 @@ def test_us11_filter_by_category_empty_input(monkeypatch):
 
     assert manager.filter_by_category("") == []
     assert manager.filter_by_category(None) == []
+
+
+def test_us13_sort_by_name_ascending(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Chair", "property", 50, "available"),
+        Asset("2", "Laptop", "other", 900, "available"),
+        Asset("3", "Desk", "property", 200, "available"),
+    ])
+
+    results = manager.sort_assets(by="name", descending=False)
+    names = [a.name for a in results]
+
+    assert names == ["Chair", "Desk", "Laptop"]
+
+
+def test_us13_sort_by_value_descending(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Printer", "other", 150, "available"),
+        Asset("2", "Server", "other", 5000, "available"),
+        Asset("3", "Mouse", "other", 25, "available"),
+    ])
+
+    results = manager.sort_assets(by="value", descending=True)
+    values = [a.value for a in results]
+
+    assert values == [5000, 150, 25]
+
+
+def test_us13_sort_invalid_field_returns_empty_list(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Monitor", "property", 180, "available"),
+    ])
+
+    assert manager.sort_assets(by="invalid") == []
+

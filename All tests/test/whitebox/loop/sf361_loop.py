@@ -41,3 +41,33 @@ def test_us10_loop_many_assets(monkeypatch):
     assert "Lenovo Laptop" in names
     assert "Laptop Stand" in names
     assert "Whiteboard Marker" not in names
+
+
+def test_us13_loop_zero_assets(monkeypatch):
+    manager = make_manager(monkeypatch, [])
+
+    results = manager.sort_assets(by="name")
+    assert results == []
+
+
+def test_us13_loop_one_asset(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Whiteboard", "property", 120, "available"),
+    ])
+
+    results = manager.sort_assets(by="name")
+    assert len(results) == 1
+    assert results[0].name == "Whiteboard"
+
+
+def test_us13_loop_many_assets(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Tablet", "other", 400, "available"),
+        Asset("2", "Camera", "other", 300, "available"),
+        Asset("3", "Laptop", "other", 900, "available"),
+    ])
+
+    results = manager.sort_assets(by="value")
+    values = [a.value for a in results]
+
+    assert values == [300, 400, 900]
