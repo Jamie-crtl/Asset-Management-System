@@ -213,3 +213,49 @@ def test_us15_assign_asset_not_found(monkeypatch):
 
     assert success is False
     assert message == "Asset not found"
+
+
+def test_us16_unassign_asset_success(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Laptop", "other", 900, "assigned", assigned_to="alice"),
+    ])
+
+    success, message = manager.unassign_asset("1")
+
+    assert success is True
+    assert message == "Asset unassigned successfully"
+
+    asset = manager.get_asset_by_id("1")
+    assert asset.assigned_to is None
+    assert asset.status == "available"
+
+
+def test_us16_unassign_asset_not_assigned(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Monitor", "property", 150, "available"),
+    ])
+
+    success, message = manager.unassign_asset("1")
+
+    assert success is False
+    assert message == "Asset is not assigned"
+
+
+def test_us16_unassign_asset_disposed(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Old PC", "other", 40, "disposed"),
+    ])
+
+    success, message = manager.unassign_asset("1")
+
+    assert success is False
+    assert message == "Cannot unassign a disposed asset"
+
+
+def test_us16_unassign_asset_not_found(monkeypatch):
+    manager = make_manager(monkeypatch, [])
+
+    success, message = manager.unassign_asset("999")
+
+    assert success is False
+    assert message == "Asset not found"
