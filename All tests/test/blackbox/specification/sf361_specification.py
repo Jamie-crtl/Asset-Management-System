@@ -167,3 +167,49 @@ def test_us14_filter_by_value_range_invalid_inputs(monkeypatch):
 
     assert manager.filter_by_value_range("low", 500) == []
     assert manager.filter_by_value_range(100, "high") == []
+
+
+def test_us15_assign_asset_success(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Laptop", "other", 900, "available"),
+    ])
+
+    success, message = manager.assign_asset_to_user("1", "alice")
+
+    assert success is True
+    assert message == "Asset assigned successfully"
+
+    asset = manager.get_asset_by_id("1")
+    assert asset.assigned_to == "alice"
+    assert asset.status == "assigned"
+
+
+def test_us15_assign_asset_already_assigned(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Phone", "other", 500, "assigned", assigned_to="bob"),
+    ])
+
+    success, message = manager.assign_asset_to_user("1", "alice")
+
+    assert success is False
+    assert message == "Asset is already assigned"
+
+
+def test_us15_assign_asset_disposed(monkeypatch):
+    manager = make_manager(monkeypatch, [
+        Asset("1", "Old PC", "other", 50, "disposed"),
+    ])
+
+    success, message = manager.assign_asset_to_user("1", "alice")
+
+    assert success is False
+    assert message == "Cannot assign a disposed asset"
+
+
+def test_us15_assign_asset_not_found(monkeypatch):
+    manager = make_manager(monkeypatch, [])
+
+    success, message = manager.assign_asset_to_user("999", "alice")
+
+    assert success is False
+    assert message == "Asset not found"
