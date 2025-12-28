@@ -856,7 +856,43 @@ class AssetManager:
             else:
                 print("Invalid choice, please select a valid option.")
     def config_file_support(self, config_file):
-        pass
+
+        # Default configuration
+        default = {
+            "data_file": "assets.json",
+            "backup_file": "assets_backup.json",
+            "depreciation_rate": 0.0,
+            "max_backups": 5
+        }
+
+        config = default.copy()
+
+        try:
+            with open(config_file, "r") as f:
+                loaded_config = json.load(f)
+
+                # uses new values if valid
+                if isinstance(loaded_config, dict):
+                    for key in default:
+                        if key in loaded_config:
+                            config[key] = loaded_config[key]
+        # Error checking
+        # use defaults if error occurs
+        except FileNotFoundError:
+            pass
+        except json.JSONDecodeError:
+            pass
+
+        # Apply depreciation rate
+        try:
+            rate = float(config["depreciation_rate"])
+            if 0 <= rate <= 1:
+                self.depreciation_rate = rate
+        # if error then set to default
+        except Exception:
+            self.depreciation_rate = default["depreciation_rate"]
+
+        return config
     def help_command(self):
         pass
 
