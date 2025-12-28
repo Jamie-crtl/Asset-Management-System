@@ -15,8 +15,12 @@ def save_assets(assets):
             "assigned_to": a.assigned_to,
             "history": a.history
         })
-    with open(DATA_FILE, "w") as f:
-        json.dump(data, f, indent=2)
+    try:
+        with open(DATA_FILE, "w") as f:
+            json.dump(data, f, indent=2)
+        return True
+    except Exception:
+        return False
 
 def load_assets():
     try:

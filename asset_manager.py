@@ -10,6 +10,12 @@ class AssetManager:
         self.assets = self.load_assets_preventing_duplicates(loaded_assets)  # convert to DICT for fast lookup
         self.depreciation_rate = 0.0
 
+    def persist_data_to_file(self):
+        persist = storage.save_assets(list(self.assets.values()))
+        if not persist:
+            print("Failed to save assets")
+        return persist
+
     def load_assets_preventing_duplicates(self, loaded_assets):
         assets = {}
         for a in loaded_assets:
@@ -40,12 +46,14 @@ class AssetManager:
             return str(e)
 
         self.assets[asset_id] = new_asset
+        self.persist_data_to_file()
         return new_asset
 
     def delete_asset(self, asset_id):
         if asset_id not in self.assets:
             return False
         del self.assets[asset_id]
+        self.persist_data_to_file()
         return True
 
     def get_asset_by_id(self, asset_id):
@@ -63,6 +71,7 @@ class AssetManager:
             return False
 
         setattr(asset, field, new_data)
+        self.persist_data_to_file()
         return True
 
     def list_assets(self):
