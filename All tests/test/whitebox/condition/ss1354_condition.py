@@ -36,3 +36,7 @@ def test_us01_branch_duplicate(monkeypatch):
         "history": []
     })
     assert res == "duplicate asset_id"
+
+def test_us04_branch_invalid_field(monkeypatch):
+    m = make_manager(monkeypatch, [Asset("A1", "Laptop", "property", 1, "available", None, [])])
+    assert m.update_asset_field("A1", "invalid", "X") is False
