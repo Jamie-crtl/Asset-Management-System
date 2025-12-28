@@ -84,7 +84,7 @@ class AssetManager:
         return "\n".join(lines)
 
     def validate_required_fields(self, asset_data):
-        required_fields = ["name","category","value","status","assigned_to","history"]
+        required_fields = ["name","category","value","status"]
         for field in required_fields:
             if field not in asset_data:
                 return False

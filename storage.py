@@ -39,3 +39,7 @@ def load_assets():
 
     except FileNotFoundError:
         return []
+    except json.JSONDecodeError:
+        return []
+    except Exception:
+        return []
