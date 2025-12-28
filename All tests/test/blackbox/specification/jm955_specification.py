@@ -29,3 +29,13 @@ def test_specification_us20_end_to_end_reason_attached(monkeypatch):
     manager.change_asset_status("1", "assigned")
     assert manager.record_reason_for_change("1", "Loan") == "Reason recorded successfully"
     assert manager.assets["1"].history[-1]["reason"] == "Loan"
+
+#US21
+def test_specification_us21_returns_history_after_change(monkeypatch):
+    manager = specification_make_manager(monkeypatch)
+    manager.change_asset_status("1", "assigned")
+    manager.record_reason_for_change("1", "Loan")
+    hist = manager.view_status_history("1")
+    assert isinstance(hist, list)
+    assert hist[-1]["to"] == "assigned"
+    assert hist[-1]["reason"] == "Loan"
