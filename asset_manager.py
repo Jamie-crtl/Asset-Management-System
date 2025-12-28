@@ -565,7 +565,7 @@ class AssetManager:
 
         return summary
 
-    def get_assets_per_user(self, asset_id, assets):
+    def get_assets_per_user(self, assets):
         if not isinstance(assets, list):
             return "Assets must be provided in a list"
 
@@ -683,8 +683,178 @@ class AssetManager:
         except FileNotFoundError:
             return self.display_error_message("File not found")
 
-    def run_text_menu(self):
-        pass
+    def run_text_menu(self, role):
+        while True:
+            print("\n Asset Management System")
+
+            #Admin only options
+            if role == "admin":
+                print("A - Create new asset")
+                print("B - List all assets")
+                print("C - Delete asset")
+                print("D - Update asset field")
+                print("E - Assign asset to user")
+                print("F - Unassign asset")
+                print("G - View asset status history")
+                print("I - Set depreciation rate")
+                print("S - Import asset data from JSON")
+                print("T - Export asset data to JSON")
+                print("U - Flag low value assets")
+
+            print("J - Search asset by name")
+            print("K - Filter by category")
+            print("L - Filter by status")
+            print("M - Filter by value range")
+            print("N - View depreciation comparison report")
+            print("O - View assets per user")
+            print("P - View inventory summary report")
+            print("Q - View assets by user")
+            print("R - Sort assets")
+
+            print("H - Help")
+            print("0 - Exit")
+
+            choice = input("What would you like to do? ").upper().strip()
+
+            # Create asset
+            if choice == "A":
+                id_choice = input("Enter asset ID: ").strip()
+                name_choice = input("Enter asset name: ").strip()
+                category_choice = input("Enter asset category: ").strip()
+                value_choice = input("Enter asset value: ").strip()
+                status_choice = input("Enter asset status: ").strip()
+                assignee_choice = input("Enter asset assignee (leave blank if none: ").strip()
+
+                if assignee_choice == "":
+                    assignee_choice = None
+
+                asset_data = {
+                    "asset_id": id_choice,
+                    "name": name_choice,
+                    "category": category_choice,
+                    "status": status_choice,
+                    "assigned_to": assignee_choice,
+                    "history": []
+                }
+
+                self.create_new_asset(asset_data)
+                self.log_crud_action("CREATE", id_choice)
+                print("Asset created successfully")
+
+            # List assets
+            elif choice == "B":
+                print(self.list_assets())
+
+            # Delete asset
+            elif choice == "C":
+                deletion_choice = input("State the ID of the asset you wish to delete. ").strip()
+                self.delete_asset(deletion_choice)
+                self.log_crud_action("DELETE", deletion_choice)
+                print("Asset ID: " + deletion_choice + "has been deleted")
+
+            # Update asset field
+            elif choice == "D":
+                id_choice = input("State the ID of the asset you wish to update. ").strip()
+                field_choice = input("State the field of the asset you wish to update. ").strip()
+                new_data = input("State your change here: ").strip()
+                reason = input("State your reason for change: ").strip()
+                self.update_asset_field(id_choice, field_choice, new_data)
+                self.record_reason_for_change(id_choice, reason)
+                self.log_crud_action("UPDATE", id_choice)
+                print("Asset ID: " + id_choice + "has been updated")
+
+            # Assign asset to user
+            elif choice == "E":
+                id_choice = input("State the ID of the asset you wish to assign. ").strip()
+                user_choice = input("State user: ").strip()
+                self.assign_asset_to_user(id_choice, user_choice)
+                self.log_crud_action("UPDATE", id_choice)
+                print("Asset ID: " + id_choice + " has been assigned to " + user_choice)
+
+            # Unassign asset
+            elif choice == "F":
+                id_choice = input("State the ID of the asset you wish to unassign. ").strip()
+                self.unassign_asset(id_choice)
+                self.log_crud_action("UPDATE", id_choice)
+                print("Asset ID: " + id_choice + " has been unassigned from user")
+
+            # View status history
+            elif choice == "G":
+                id_choice = input("State the ID of the asset history you wish to view. ").strip()
+                print(self.view_status_history(id_choice))
+
+            # Set depreciation rate
+            elif choice == "I":
+                rate_choice = input("State the new rate here: ").strip()
+                self.set_depreciation_rate(rate_choice)
+
+            # Search asset by name
+            elif choice == "J":
+                name_choice = input("State the asset name. ").strip()
+                print(self.search_by_name(name_choice))
+
+            # Filter by category
+            elif choice == "K":
+                category_choice = input("State the category. ").strip()
+                print(self.filter_by_category(category_choice))
+
+            # Filter by status
+            elif choice == "L":
+                status_choice = input("State the status. ").strip()
+                print(self.filter_by_status(status_choice))
+
+            # Filter by value
+            elif choice == "M":
+                min_value = float(input("State the minimum value. ").strip())
+                max_value = float(input("State the maximum value. ").strip())
+                print(self.filter_by_value_range(min_value, max_value))
+
+            # View depreciation comparison report
+            elif choice == "N":
+                print(self.create_depreciation_comparison(list(self.assets.values())))
+
+            # View assets per user
+            elif choice == "O":
+                print(self.get_assets_per_user(list(self.assets.values())))
+
+            # View inventory summary report
+            elif choice == "P":
+                print(self.create_inventory_summary(list(self.assets.values())))
+
+            #View assets by user
+            elif choice == "Q":
+                user_choice = input("State the user name. ").strip()
+                print(self.view_assets_by_user(user_choice))
+
+            elif choice == "R":
+                sort_choice = input("State the sort choice. (Name, Value, Status, Category) ").strip().lower()
+                order_choice = input("In descending order? (Y/N) ").strip().upper()
+                is_descending = True if order_choice == "Y" else False
+                print(self.sort_assets(sort_choice, is_descending))
+
+            elif choice == "S":
+                file_path_choice = input("State the file path. ").strip()
+                print(self.import_assets_from_json(file_path_choice))
+
+            elif choice == "T":
+                file_path_choice = input("State the file path. ").strip()
+                print(self.export_assets_to_json(file_path_choice))
+
+            elif choice == "U":
+                threshold_choice = input("State the threshold. ").strip()
+                print(self.flag_low_value_assets(threshold_choice))
+
+
+            # Help command
+            elif choice == "H":
+                print(self.help_command())
+
+            # Exit
+            elif choice == "0":
+                break
+
+            else:
+                print("Invalid choice, please select a valid option.")
     def config_file_support(self, config_file):
         pass
     def help_command(self):
