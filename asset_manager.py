@@ -894,7 +894,27 @@ class AssetManager:
 
         return config
     def help_command(self):
-        pass
+        print("\n Help: List of available commands")
+        print("A: Create new asset - Create a new asset with a name, category, value and status")
+        print("B: List all assets - List all current assets and their fields")
+        print("C: Delete asset - Delete a specific asset")
+        print("D: Update asset field - Update a specific field of an asset")
+        print("E: Assign asset to user - Assign an asset to a specific user")
+        print("F: Unassign asset - Unassign an asset from a specific user and becomes available")
+        print("G: View asset status history - View an asset's status history")
+        print("I: Set depreciation rate - Set a rate for asset values to depreciate annually")
+        print("J: Search asset by name - Search for assets by their name")
+        print("K: Filter by category - Filter assets by their category")
+        print("L: Filter by status - Filter assets by their status")
+        print("M: Filter by value range - Filter assets by a range of values")
+        print("N: View depreciation comparison report - Shows a report of all assets with their change in value")
+        print("O: View assets per user - Shows a list of all assets and if they are assigned to a user")
+        print("P: View inventory summary report - Shows a report of all assets summarised by category and status")
+        print("Q: View assets by user - Shows all assets assigned to a specific user")
+        print("R: Sort assets - Sort assets by their name, value, status or category")
+        print("S: Import asset data from JSON - Import asset data from a JSON file")
+        print("T: Export asset data from JSON - Export asset data to a JSON file")
+        print("U: Flag low value assets - Flag assets with value below a certain threshold")
 
 
 
