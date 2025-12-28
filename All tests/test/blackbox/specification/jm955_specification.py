@@ -5,7 +5,9 @@ from asset_manager import AssetManager
 def specification_make_manager(monkeypatch):
     monkeypatch.setattr(storage, "save_assets", lambda assets: None)
     monkeypatch.setattr(storage, "load_assets", lambda: [
-        Asset("1", "Laptop", "property", 1000, "available")
+        Asset("1", "Laptop", "property", 1000, "available"),
+        Asset("2", "Car", "vehicle", 5000, "assigned"),
+        Asset("3", "Old Phone", "other", 50, "available"),
     ])
     return AssetManager()
 
@@ -39,3 +41,13 @@ def test_specification_us21_returns_history_after_change(monkeypatch):
     assert isinstance(hist, list)
     assert hist[-1]["to"] == "assigned"
     assert hist[-1]["reason"] == "Loan"
+
+#US22
+def test_specification_us22_set_rate_success(monkeypatch):
+    manager = specification_make_manager(monkeypatch)
+    assert manager.set_depreciation_rate(0.1) == "Depreciation rate updated successfully"
+    assert manager.depreciation_rate == 0.001
+
+def test_specification_us22_set_rate_out_of_range(monkeypatch):
+    manager = specification_make_manager(monkeypatch)
+    assert manager.set_depreciation_rate(150) == "Rate must be inbetween values 0 and 100"
