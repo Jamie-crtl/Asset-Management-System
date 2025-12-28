@@ -7,3 +7,11 @@ def make_manager(monkeypatch, assets_list):
     monkeypatch.setattr(storage, "load_assets", lambda: assets_list)
     monkeypatch.setattr(storage, "save_assets", lambda assets: True)
     return AssetManager()
+
+
+def test_us02_symbolic_get_returns_same_object(monkeypatch):
+    a = Asset("A1", "Laptop", "property", 100, "available", None, [])
+    m = make_manager(monkeypatch, [a])
+    got = m.get_asset_by_id("A1")
+    assert got is not None
+    assert got.id == "A1"
