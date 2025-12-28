@@ -7,8 +7,15 @@ import shutil
 class AssetManager:
     def __init__(self):
         loaded_assets = storage.load_assets()  # this returns a LIST from storage.py
-        self.assets = {a.id: a for a in loaded_assets}  # convert to DICT for fast lookup
+        self.assets = self.load_assets_preventing_duplicates(loaded_assets)  # convert to DICT for fast lookup
         self.depreciation_rate = 0.0
+
+    def load_assets_preventing_duplicates(self, loaded_assets):
+        assets = {}
+        for a in loaded_assets:
+            if a.id not in assets:
+                assets[a.id] = a
+        return assets
 
     def create_new_asset(self, asset_data):
         asset_id = asset_data.get("asset_id")
@@ -34,8 +41,6 @@ class AssetManager:
 
         self.assets[asset_id] = new_asset
         return new_asset
-
-
 
     def delete_asset(self, asset_id):
         if asset_id not in self.assets:
