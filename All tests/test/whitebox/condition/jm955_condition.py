@@ -42,11 +42,21 @@ def test_condition_us20_success(monkeypatch):
     assert res == "Reason recorded successfully"
     assert manager.assets["1"].history[-1]["reason"] == "Issued to new starter"
 
-# US22
+#US22
 def test_condition_us22_rate_none(monkeypatch):
     manager = condition_make_manager(monkeypatch)
     assert manager.set_depreciation_rate(None) == "Valid rate is required"
 
-def test_condition_rate_not_number(monkeypatch):
+def test_condition_us22_rate_not_number(monkeypatch):
     manager = condition_make_manager(monkeypatch)
     assert manager.set_depreciation_rate("abc") == "Valid rate is required"
+
+#US23
+def test_condition_us23_asset_id_none(monkeypatch):
+    manager = condition_make_manager(monkeypatch)
+    assert manager.calculate_current_value(None, 1) == "Valid asset_id is required"
+
+def test_condition_us23_years_negative(monkeypatch):
+    manager = condition_make_manager(monkeypatch)
+    manager.set_depreciation_rate(0.1)
+    assert manager.calculate_current_value("1", -1) == "Years must be 0 or greater"
