@@ -27,3 +27,14 @@ def test_us03_loop_many_assets(monkeypatch):
     ])
     out = m.list_assets()
     assert "A1:" in out and "B2:" in out and "C3:" in out
+
+def test_us06_loop_required_fields_fail_early(monkeypatch):
+    m = make_manager(monkeypatch, [])
+    assert m.validate_required_fields({
+        "name": "",  # fail early
+        "category": "property",
+        "value": 100,
+        "status": "available",
+        "assigned_to": None,
+        "history": []
+    }) is False

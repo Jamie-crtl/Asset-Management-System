@@ -40,3 +40,7 @@ def test_us01_path_success(monkeypatch):
 def test_us04_path_invalid_field(monkeypatch):
     m = make_manager(monkeypatch, [Asset("A1", "Laptop", "property", 100, "available", None, [])])
     assert m.update_asset_field("A1", "bad", 123) is False
+
+def test_us05_path_delete_missing(monkeypatch):
+    m = make_manager(monkeypatch, [])
+    assert m.delete_asset("NOPE") is False
