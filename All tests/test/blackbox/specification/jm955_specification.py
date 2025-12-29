@@ -66,3 +66,35 @@ def test_specification_us25_export_success(monkeypatch, tmp_path):
     data = json.loads(out_file.read_text(encoding="utf-8"))
     assert isinstance(data, list) #list format
     assert any(d.get("id") == "1" for d in data)
+
+#US26
+def test_specification_us26_import_success(monkeypatch, tmp_path):
+    manager = specification_make_manager(monkeypatch)
+
+    import_file = tmp_path / "import.json"
+    import_data = [
+        {
+            "id": "3",
+            "name": "Old Phone",
+            "category": "other",
+            "value": 50,
+            "status": "available",
+            "assigned_to": None,
+            "history": []
+        },
+        {
+            "id": "1",  # duplicate
+            "name": "Laptop",
+            "category": "property",
+            "value": 1000,
+            "status": "available",
+            "assigned_to": None,
+            "history": []
+        }
+    ]
+    import_file.write_text(json.dumps(import_data), encoding="utf-8")
+
+    res = manager.import_assets_from_json(str(import_file))
+    assert "Successfully imported assets" in res
+    assert "3" in manager.assets  # imported new asset
+    assert "1" in manager.assets  # still exists

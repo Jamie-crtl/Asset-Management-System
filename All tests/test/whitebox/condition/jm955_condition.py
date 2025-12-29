@@ -66,3 +66,8 @@ def test_condition_us25_invalid_path(monkeypatch):
     manager = condition_make_manager(monkeypatch)
     assert manager.export_assets_to_json("") == "Valid file_path is required"
     assert manager.export_assets_to_json(None) == "Valid file_path is required"
+
+# US26
+def test_condition_us26_file_not_found(monkeypatch):
+    manager = condition_make_manager(monkeypatch)
+    assert manager.import_assets_from_json("error_test.json") == "File not found"

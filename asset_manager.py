@@ -299,8 +299,15 @@ class AssetManager:
         if file_path == "":
             return "Valid file_path is required"
 
-        with open(file_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+        except FileNotFoundError:
+            return "File not found"
+
+        except json.JSONDecodeError:
+            return "Invalid JSON file"
 
         imported = 0
         for item in data:
