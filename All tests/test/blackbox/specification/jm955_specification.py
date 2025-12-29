@@ -98,3 +98,22 @@ def test_specification_us26_import_success(monkeypatch, tmp_path):
     assert "Successfully imported assets" in res
     assert "3" in manager.assets  # imported new asset
     assert "1" in manager.assets  # still exists
+
+#US26
+def test_us27_backup_success(monkeypatch, tmp_path):
+    manager = specification_make_manager(monkeypatch)
+
+    data_file = tmp_path / "assets.json" #temporary placeholder json file
+    data_file.write_text("[]", encoding="utf-8")
+
+    monkeypatch.setattr(storage, "DATA_FILE", str(data_file))
+
+    old_cwd = os.getcwd()
+    os.chdir(tmp_path)
+    try:
+        res = manager.create_backup_on_exit()
+        assert res == "Backup created successfully"
+        backup_files = [p for p in tmp_path.iterdir() if p.name.startswith("assets_backup_")]#verify backup file exists
+        assert len(backup_files) >= 0
+    finally:
+        os.chdir(old_cwd)

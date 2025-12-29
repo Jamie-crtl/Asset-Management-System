@@ -61,13 +61,20 @@ def test_condition_us23_years_negative(monkeypatch):
     manager.set_depreciation_rate(0.1)
     assert manager.calculate_current_value("1", -1) == "Years must be 0 or greater"
 
-# US25
+#US25
 def test_condition_us25_invalid_path(monkeypatch):
     manager = condition_make_manager(monkeypatch)
     assert manager.export_assets_to_json("") == "Valid file_path is required"
     assert manager.export_assets_to_json(None) == "Valid file_path is required"
 
-# US26
+#US26
 def test_condition_us26_file_not_found(monkeypatch):
     manager = condition_make_manager(monkeypatch)
     assert manager.import_assets_from_json("error_test.json") == "File not found"
+
+#US27
+def test_condition_us27_no_file_to_backup(monkeypatch, tmp_path):
+    manager = condition_make_manager(monkeypatch)
+
+    monkeypatch.setattr(storage, "DATA_FILE", str(tmp_path / "missing_assets.json"))
+    assert manager.create_backup_on_exit() == "No data file to backup"

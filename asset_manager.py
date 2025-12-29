@@ -2,6 +2,7 @@ from asset import Asset
 import storage
 import datetime
 import json
+import os
 import shutil
 
 class AssetManager:
@@ -336,8 +337,14 @@ class AssetManager:
 
         storage.save_assets(list(self.assets.values()))# Ensures storage file exists by saving current state
 
-        shutil.copyfile(data_file, backup_file)
-        return "Backup created successfully"
+        if not os.path.exists(data_file):
+            return "No data file to backup"
+
+        try:
+            shutil.copyfile(data_file, backup_file)
+            return "Backup created successfully"
+        except Exception:
+            return "Backup failed"
 
     def search_by_name(self, query: str):
         # Case-insensitive substring search on asset name
