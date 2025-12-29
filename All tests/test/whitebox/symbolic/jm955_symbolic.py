@@ -17,8 +17,8 @@ def test_symbolic_us19_asset_id_none(monkeypatch):
 
 def test_symbolic_us19_asset_not_found(monkeypatch):
     manager = symbolic_make_manager(monkeypatch)
-    assert manager.change_asset_status("A999", "assigned") == "Asset not found"
+    assert manager.change_asset_status("999", "assigned") == "Asset not found"
 
 def test_symbolic_us19_success(monkeypatch):
     manager = symbolic_make_manager(monkeypatch)
-    assert manager.change_asset_status("A1", "assigned") == "Status updated successfully"
+    assert manager.change_asset_status("1", "assigned") == "Status updated successfully"

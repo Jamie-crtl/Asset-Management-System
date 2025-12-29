@@ -28,7 +28,7 @@ def test_loop_us21_one_history(monkeypatch):
     assert len(hist) == 1
     assert hist[0]["to"] == "assigned"
 
-def test_loop_many_history(monkeypatch):
+def test_loop_us21_many_history(monkeypatch):
     manager = loop_make_manager_history(monkeypatch, [
         {"from": "available", "to": "assigned", "reason": "Loan"},
         {"from": "assigned", "to": "disposed", "reason": "Broken"},
