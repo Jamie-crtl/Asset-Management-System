@@ -60,3 +60,9 @@ def test_condition_us23_years_negative(monkeypatch):
     manager = condition_make_manager(monkeypatch)
     manager.set_depreciation_rate(0.1)
     assert manager.calculate_current_value("1", -1) == "Years must be 0 or greater"
+
+# US25
+def test_condition_us25_invalid_path(monkeypatch):
+    manager = condition_make_manager(monkeypatch)
+    assert manager.export_assets_to_json("") == "Valid file_path is required"
+    assert manager.export_assets_to_json(None) == "Valid file_path is required"

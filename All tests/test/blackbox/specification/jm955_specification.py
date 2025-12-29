@@ -1,3 +1,5 @@
+import json
+import os
 import storage
 from asset import Asset
 from asset_manager import AssetManager
@@ -51,3 +53,16 @@ def test_specification_us22_set_rate_success(monkeypatch):
 def test_specification_us22_set_rate_out_of_range(monkeypatch):
     manager = specification_make_manager(monkeypatch)
     assert manager.set_depreciation_rate(150) == "Rate must be inbetween values 0 and 100"
+
+#US25
+def test_specification_us25_export_success(monkeypatch, tmp_path):
+    manager = specification_make_manager(monkeypatch)
+    out_file = tmp_path / "export.json"
+
+    res = manager.export_assets_to_json(str(out_file))
+    assert res == "JSON Exported successfully"
+    assert out_file.exists()
+
+    data = json.loads(out_file.read_text(encoding="utf-8"))
+    assert isinstance(data, list) #list format
+    assert any(d.get("id") == "1" for d in data)
