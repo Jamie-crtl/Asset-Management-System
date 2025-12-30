@@ -1,3 +1,5 @@
+#All test cases for whitebox condition testing
+
 from asset_manager import AssetManager
 from asset import Asset
 import storage
@@ -9,6 +11,7 @@ def make_manager(monkeypatch, assets_list):
     return AssetManager()
 
 
+#US28 - Create inventory summary
 def test_us28_create_inventory_summary_not_list(monkeypatch):
     manager = make_manager(monkeypatch, [])
 
@@ -27,4 +30,18 @@ def test_us28_create_inventory_summary_negative_asset_value(monkeypatch):
     #bypasses Asset validation
     asset.value = -1
     assert manager.create_inventory_summary([asset]) == "Asset is missing value or has negative value"
+
+
+#US29 - View assets per user
+def test_us29_get_assets_per_user_not_list(monkeypatch):
+    manager = make_manager(monkeypatch, [])
+
+    assert manager.get_assets_per_user("test: not a list") == "Assets must be provided in a list"
+
+def test_us29_get_assets_per_user_asset_is_none(monkeypatch):
+    manager = make_manager(monkeypatch, [])
+
+    assert manager.get_assets_per_user([None]) == "Asset not found"
+
+
 

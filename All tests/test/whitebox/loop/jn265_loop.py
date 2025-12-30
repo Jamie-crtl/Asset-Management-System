@@ -1,3 +1,5 @@
+#All test cases for whitebox loop testing
+
 from asset_manager import AssetManager
 from asset import Asset
 import storage
@@ -8,6 +10,7 @@ def make_manager(monkeypatch, assets_list):
     return AssetManager()
 
 
+#US28 - Create Inventory Summary
 def test_us28_create_inventory_summary_accumulates_over_loop(monkeypatch):
     manager = make_manager(monkeypatch, [])
 
@@ -39,3 +42,23 @@ def test_us28_create_inventory_summary_multiple_categories_and_statuses(monkeypa
     assert summary["vehicle"]["assigned"]["count"] == 1
     assert summary["vehicle"]["available"]["count"] == 1
     assert summary["other"]["available"]["count"] == 1
+
+
+#US29 - View assets per user
+def test_us29_get_assets_per_user_process_all_assets(monkeypatch):
+    manager = make_manager(monkeypatch, [])
+
+    assets = [
+        Asset("1", "Desk", "property", 200, "assigned", assigned_to="Alice"),
+        Asset("2", "Chair", "property", 80, "assigned", assigned_to="Alice"),
+        Asset("3", "Car", "vehicle", 10000, "assigned", assigned_to="Bob")
+    ]
+
+    result = manager.get_assets_per_user(assets)
+
+    #all 3 assets are processed
+    assert len(result) == 3
+
+    #check asset ids appear only once
+    asset_ids = [r["asset_id"] for r in result]
+    assert asset_ids == ["1", "2", "3"]
