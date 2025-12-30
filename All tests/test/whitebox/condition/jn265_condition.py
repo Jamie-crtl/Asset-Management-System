@@ -81,5 +81,21 @@ def test_us30_create_depreciation_comparison_current_value_invalid(monkeypatch):
     assert manager.create_depreciation_comparison([asset]) == "Asset has no value"
 
 
+#US31 - Log CRUD actions
+def test_us31_log_crud_action_invalid_action(monkeypatch):
+    manager = make_manager(monkeypatch, [])
+
+    result = manager.log_crud_action("INVALID_ACTION", "1")
+
+    assert result == "Invalid CRUD action"
+
+def test_us31_log_crud_action_asset_is_none(monkeypatch):
+    manager = make_manager(monkeypatch, [])
+
+    result = manager.log_crud_action("CREATE", None)
+
+    assert result == "Asset not found"
+
+
 
 

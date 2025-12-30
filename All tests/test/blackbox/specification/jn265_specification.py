@@ -1,8 +1,8 @@
 #All test cases for blackbox specification testing
-
 from asset_manager import AssetManager
 from asset import Asset
 import storage
+import builtins
 
 def make_manager(monkeypatch, assets_list):
     monkeypatch.setattr(storage, "load_assets", lambda: assets_list)
@@ -130,3 +130,29 @@ def test_us30_create_depreciation_comparison_calculation(monkeypatch):
     assert report[0]["percentage_drop"] == 25.0
     assert report[0]["original_value"] == 100
     assert report[0]["current_value"] == 75
+
+
+#US31 - Log CRUD actions
+def test_us31_log_crud_action_write_to_file(monkeypatch, tmp_path):
+    manager = make_manager(monkeypatch, [])
+
+    #temporary file as not to overwrite crud_log.txt
+    log_file = tmp_path / "crud_log.txt"
+    real_open = builtins.open
+
+    #redirects request to open crud_log to temporary file
+    def fake_open(name, mode="r", *args, **kwargs):
+        if name == "crud_log.txt":
+            return real_open(log_file, mode, *args, **kwargs)
+        return real_open(name, mode, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "open", fake_open)
+
+    #ensures entry is successfully logged
+    log = manager.log_crud_action("CREATE", "1")
+    assert "CRUD action successfully logged at" in log
+
+    #ensures information is formatted correctly
+    content = log_file.read_text()
+    assert "ID: 1" in content
+    assert "CREATE" in content
