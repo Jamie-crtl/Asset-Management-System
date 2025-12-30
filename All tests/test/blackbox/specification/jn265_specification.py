@@ -156,3 +156,12 @@ def test_us31_log_crud_action_write_to_file(monkeypatch, tmp_path):
     content = log_file.read_text()
     assert "ID: 1" in content
     assert "CREATE" in content
+
+
+#US32 - Display error messages
+def test_us32_display_error_message_returns_message(monkeypatch):
+    manager = make_manager(monkeypatch, [])
+
+    result = manager.display_error_message("Invalid input")
+    #confirms message return
+    assert result == "Invalid input"
