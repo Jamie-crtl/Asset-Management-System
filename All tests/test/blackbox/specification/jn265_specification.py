@@ -24,7 +24,7 @@ def test_us28_create_inventory_summary_by_category_and_status(monkeypatch):
 
     summary = manager.create_inventory_summary(assets)
 
-    #
+    #values are constructed correctly
     assert summary["property"]["available"]["count"] == 2
     assert summary["property"]["available"]["total_value"] == 280
 
@@ -94,6 +94,39 @@ def test_us29_get_assets_per_user_unassigned_label(monkeypatch):
     result = manager.get_assets_per_user(assets)
 
     assigned_values = [r["assigned_to"] for r in result]
-
+    #checks blank values are given unassigned
     assert assigned_values == ["Unassigned", "Unassigned"]
 
+
+#US30 - Depreciation comparison report
+def test_us30_create_depreciation_comparison_sorted_descending(monkeypatch):
+    manager = make_manager(monkeypatch, [])
+
+    assets = [
+        Asset("1", "Desk", "property", 50, "available", history=[100]), #50% drop
+        Asset("2", "Car", "vehicle", 9000, "assigned", history=[10000]), #10% drop
+        Asset("3", "Laptop", "other", 0, "disposed", history=[100]) #100% drop
+    ]
+
+    report = manager.create_depreciation_comparison(assets)
+
+    assert isinstance(report, list)
+    percentage_drops = [item["percentage_drop"] for item in report]
+
+    #ensures sorted by descending percentage drop
+    assert percentage_drops == sorted(percentage_drops, reverse=True)
+    assert report[0]["asset_id"] == "3"
+    assert report[-1]["asset_id"] == "2"
+
+
+def test_us30_create_depreciation_comparison_calculation(monkeypatch):
+    manager = make_manager(monkeypatch, [])
+
+    asset = Asset("1", "Desk", "property", 75, "available", history=[100])
+
+    report = manager.create_depreciation_comparison([asset])
+
+    #ensures calculation is correct
+    assert report[0]["percentage_drop"] == 25.0
+    assert report[0]["original_value"] == 100
+    assert report[0]["current_value"] == 75

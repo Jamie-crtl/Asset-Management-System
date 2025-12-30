@@ -62,3 +62,24 @@ def test_us29_get_assets_per_user_process_all_assets(monkeypatch):
     #check asset ids appear only once
     asset_ids = [r["asset_id"] for r in result]
     assert asset_ids == ["1", "2", "3"]
+
+
+#US30 - Depreciation comparison report
+def test_us30_create_depreciation_comparison_process_all_assets(monkeypatch):
+    manager = make_manager(monkeypatch, [])
+
+    assets = [
+        Asset("1", "Desk", "property", 200, "assigned", history=[500]),
+        Asset("2", "Chair", "property", 80, "assigned", history=[100]),
+        Asset("3", "Car", "vehicle", 10000, "assigned", history=[12000])
+    ]
+
+    result = manager.create_depreciation_comparison(assets)
+
+    #all 3 assets are processed
+    assert len(result) == 3
+
+    #check asset ids appear only once
+    asset_ids = [r["asset_id"] for r in result]
+    assert asset_ids == ["1", "2", "3"]
+
