@@ -165,3 +165,18 @@ def test_us32_display_error_message_returns_message(monkeypatch):
     result = manager.display_error_message("Invalid input")
     #confirms message return
     assert result == "Invalid input"
+
+
+#US35 - Config file support
+def test_us35_config_file_support_missing_file_loads_defaults(monkeypatch, tmp_path):
+    manager = make_manager(monkeypatch, [])
+
+    missing_config = tmp_path / "does_not_exist.json"
+
+    config = manager.config_file_support(str(missing_config))
+
+    #checks default values have been implemented
+    assert config["data_file"] == "assets.json"
+    assert config["backup_file"] == "assets_backup.json"
+    assert config["depreciation_rate"] == 0.0
+    assert config["max_backups"] == 5

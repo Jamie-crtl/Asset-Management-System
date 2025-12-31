@@ -170,3 +170,61 @@ def test_us33_recover_from_corrupt_file_main_file_missing_message_returned(monke
 
     assert data == "File not found"
 
+
+#US35 - Config file support
+def test_us35_config_file_support_config_file_overrides_default(monkeypatch, tmp_path):
+    manager = make_manager(monkeypatch, [])
+
+    config_file = tmp_path / "config.json"
+    config_file.write_text(json.dumps({
+        "data_file": "custom_assets.json",
+        "max_backups": 10
+    }))
+
+    config = manager.config_file_support(str(config_file))
+
+    #checks value have been overwritten
+    assert config["data_file"] == "custom_assets.json"
+    assert config["max_backups"] == 10
+
+    #checks unchanged default values remain the same
+    assert config["backup_file"] == "assets_backup.json"
+    assert config["depreciation_rate"] == 0.0
+
+
+def test_us35_config_file_support_invalid_json_uses_defaults(monkeypatch, tmp_path):
+    manager = make_manager(monkeypatch, [])
+
+    config_file = tmp_path / "config.json"
+    config_file.write_text("{test: not valid JSON}")
+
+    config = manager.config_file_support(str(config_file))
+
+    #checks default values are in place
+    assert config["data_file"] == "assets.json"
+    assert config["backup_file"] == "assets_backup.json"
+    assert config["depreciation_rate"] == 0.0
+    assert config["max_backups"] == 5
+
+
+def test_us35_config_file_support_depreciation_rate_set(monkeypatch, tmp_path):
+    manager = make_manager(monkeypatch, [])
+
+    config_file = tmp_path / "config.json"
+    config_file.write_text(json.dumps({"depreciation_rate": 0.25}))
+
+    config = manager.config_file_support(str(config_file))
+
+    assert config["depreciation_rate"] == 0.25
+    assert manager.depreciation_rate == 0.25
+
+
+def test_us35_config_file_support_invalid_depreciation_rate(monkeypatch, tmp_path):
+    manager = make_manager(monkeypatch, [])
+
+    config_file = tmp_path / "config.json"
+    config_file.write_text(json.dumps({"depreciation_rate": "test: not a number"}))
+
+    config = manager.config_file_support(str(config_file))
+
+    assert manager.depreciation_rate == 0.0
