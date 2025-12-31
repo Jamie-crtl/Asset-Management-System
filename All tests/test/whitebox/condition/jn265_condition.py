@@ -1,5 +1,5 @@
 #All test cases for whitebox condition testing
-
+import json
 from asset_manager import AssetManager
 from asset import Asset
 import storage
@@ -97,5 +97,76 @@ def test_us31_log_crud_action_asset_is_none(monkeypatch):
     assert result == "Asset not found"
 
 
+#US33 - Recover from corrupt file
+def test_us33_recover_from_corrupt_file_load_main_file(monkeypatch, tmp_path):
+    manager = make_manager(monkeypatch, [])
 
+    #temporary files created so repo isnt changed
+    main_file = tmp_path / "assets.json"
+    backup_file = tmp_path / "assets_backup.json"
+
+    main_file.write_text(json.dumps([{"id": "1"}]))
+    backup_file.write_text(json.dumps([{"id": "backup"}]))
+
+    data = manager.recover_from_corrupt_file(str(main_file), str(backup_file))
+
+    assert data == [{"id": "1"}]
+
+
+def test_us33_recover_from_corrupt_file_load_backup_when_corrupt(monkeypatch, tmp_path):
+    manager = make_manager(monkeypatch, [])
+
+    #temporary files created so repo isnt changed
+    main_file = tmp_path / "assets.json"
+    backup_file = tmp_path / "assets_backup.json"
+
+    main_file.write_text("{test: not valid JSON}") #input is not JSON
+    backup_file.write_text(json.dumps([{"id": "backup"}]))
+
+    data = manager.recover_from_corrupt_file(str(main_file), str(backup_file))
+
+    assert data == [{"id": "backup"}]
+
+
+def test_us33_recover_from_corrupt_file_backup_file_corrupted_message_returned(monkeypatch, tmp_path):
+    manager = make_manager(monkeypatch, [])
+
+    # temporary files created so repo isnt changed
+    main_file = tmp_path / "assets.json"
+    backup_file = tmp_path / "assets_backup.json"
+
+    #input is not JSON
+    main_file.write_text("{test: not valid JSON}")
+    backup_file.write_text("{test: also not valid JSON}")
+
+    data = manager.recover_from_corrupt_file(str(main_file), str(backup_file))
+
+    assert data == "Backup file corrupted"
+
+
+def test_us33_recover_from_corrupt_file_backup_file_missing_message_returned(monkeypatch, tmp_path):
+    manager = make_manager(monkeypatch, [])
+
+    # temporary files created so repo isnt changed
+    main_file = tmp_path / "assets.json"
+    backup_file = tmp_path / "assets_backup.json"
+
+    main_file.write_text("{test: not valid JSON}")
+    #intentionally no backup file
+
+    data = manager.recover_from_corrupt_file(str(main_file), str(backup_file))
+
+    assert data == "Backup file not found"
+
+
+def test_us33_recover_from_corrupt_file_main_file_missing_message_returned(monkeypatch, tmp_path):
+    manager = make_manager(monkeypatch, [])
+
+    # temporary files created so repo isnt changed
+    main_file = tmp_path / "assets.json"
+    backup_file = tmp_path / "assets_backup.json"
+
+    data = manager.recover_from_corrupt_file(str(main_file), str(backup_file))
+
+    assert data == "File not found"
 
