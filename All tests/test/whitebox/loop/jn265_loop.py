@@ -1,4 +1,5 @@
 #All test cases for whitebox loop testing
+import builtins
 
 from asset_manager import AssetManager
 from asset import Asset
@@ -83,3 +84,38 @@ def test_us30_create_depreciation_comparison_process_all_assets(monkeypatch):
     asset_ids = [r["asset_id"] for r in result]
     assert asset_ids == ["1", "2", "3"]
 
+
+#US34 - Text-based menu system
+
+def test_us34_run_text_menu_loops_until_exit(monkeypatch):
+    manager = make_manager(monkeypatch, [])
+
+    # replaces input() to simulate user interaction
+    inputs = iter(["0"])
+    monkeypatch.setattr(builtins, "input", lambda _: next(inputs))
+
+    # capture printed output for verification
+    printed = []
+    monkeypatch.setattr(builtins, "print", lambda *args, **kwargs: printed.append(" ".join(map(str, args))))
+
+    manager.run_text_menu(role="user")
+
+    assert any("Asset Management System" in line for line in printed)
+
+
+def test_us34_run_text_menu_invalid_input(monkeypatch):
+    manager = make_manager(monkeypatch, [])
+
+    #simulate invalid input followed by exit command
+    inputs = iter(["X", "0"])
+    # replaces input() to simulate user interaction
+    monkeypatch.setattr(builtins, "input", lambda _: next(inputs))
+
+    #capture printed output for verification
+    printed =[]
+    monkeypatch.setattr(builtins, "print", lambda *args, **kwargs: printed.append(" ".join(map(str, args))))
+
+    manager.run_text_menu(role="user")
+
+    #checks that correct error message is shown in "printed" list
+    assert any("Invalid choice" in line for line in printed)
