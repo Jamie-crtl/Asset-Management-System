@@ -10,7 +10,7 @@ def condition_make_manager(monkeypatch):
     ])
     return AssetManager()
 
-#US19
+#US19: change asset status - condition whitebox technique
 def test_condition_us19_asset_id_none(monkeypatch):
     manager = condition_make_manager(monkeypatch)
     assert manager.change_asset_status(None, "assigned") == "Valid asset_id is required"
@@ -19,7 +19,7 @@ def test_condition_us19_same_status(monkeypatch):
     manager = condition_make_manager(monkeypatch)
     assert manager.change_asset_status("1", "available") == "Status already set"
 
-#US20
+#US20: record reason for change - condition whitebox technique
 def test_condition_us20_asset_not_found(monkeypatch):
     manager = condition_make_manager(monkeypatch)
     assert manager.record_reason_for_change("999", "Reason") == "Asset not found"
@@ -42,7 +42,7 @@ def test_condition_us20_success(monkeypatch):
     assert res == "Reason recorded successfully"
     assert manager.assets["1"].history[-1]["reason"] == "Issued to new starter"
 
-#US22
+#US22: set depreciation rate - condition whitebox technique
 def test_condition_us22_rate_none(monkeypatch):
     manager = condition_make_manager(monkeypatch)
     assert manager.set_depreciation_rate(None) == "Valid rate is required"
@@ -51,7 +51,7 @@ def test_condition_us22_rate_not_number(monkeypatch):
     manager = condition_make_manager(monkeypatch)
     assert manager.set_depreciation_rate("abc") == "Valid rate is required"
 
-#US23
+#US23: calculate current value - condition whitebox technique
 def test_condition_us23_asset_id_none(monkeypatch):
     manager = condition_make_manager(monkeypatch)
     assert manager.calculate_current_value(None, 1) == "Valid asset_id is required"
@@ -61,18 +61,18 @@ def test_condition_us23_years_negative(monkeypatch):
     manager.set_depreciation_rate(0.1)
     assert manager.calculate_current_value("1", -1) == "Years must be 0 or greater"
 
-#US25
+#US25: export asset data to json - condition whitebox technique
 def test_condition_us25_invalid_path(monkeypatch):
     manager = condition_make_manager(monkeypatch)
     assert manager.export_assets_to_json("") == "Valid file_path is required"
     assert manager.export_assets_to_json(None) == "Valid file_path is required"
 
-#US26
+#US26: import asset data from json - condition whitebox technique
 def test_condition_us26_file_not_found(monkeypatch):
     manager = condition_make_manager(monkeypatch)
     assert manager.import_assets_from_json("error_test.json") == "File not found"
 
-#US27
+#US27: create backup on exit - condition whitebox technique
 def test_condition_us27_no_file_to_backup(monkeypatch, tmp_path):
     manager = condition_make_manager(monkeypatch)
 

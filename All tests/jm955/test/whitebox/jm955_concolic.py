@@ -11,6 +11,8 @@ def concolic_make_manager(monkeypatch):
 
     return AssetManager()
 
+#US19: change asset status - concolic whitebox technique
+
 def test_concolic_us19_base_path_success(monkeypatch):
     manager = concolic_make_manager(monkeypatch)
     res = manager.change_asset_status("1", "assigned")

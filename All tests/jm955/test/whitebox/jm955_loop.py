@@ -10,7 +10,7 @@ def loop_make_manager_history(monkeypatch, history):
     ])
     return AssetManager()
 
-#US21
+#US21: View asset status history - loop whitebox technique
 def test_loop_us21_asset_not_found(monkeypatch):
     manager = loop_make_manager_history(monkeypatch, [])
     assert manager.view_status_history("999") == "Asset not found"

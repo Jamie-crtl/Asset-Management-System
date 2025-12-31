@@ -9,7 +9,7 @@ def random_make_manager(monkeypatch, assets):
     monkeypatch.setattr(storage, "load_assets", lambda: assets)
     return AssetManager()
 
-#US24
+#US24: flag low value assets - random blackbox technique
 def test_random_us24_random_thresholds(monkeypatch):
     assets = []
     for i in range(10):

@@ -13,7 +13,7 @@ def specification_make_manager(monkeypatch):
     ])
     return AssetManager()
 
-#US19
+#US19: change asset status - specification blackbox technique
 def test_specification_us19_success(monkeypatch):
     manger = specification_make_manager(monkeypatch)
     assert manger.change_asset_status("1", "assigned") == "Status updated successfully"
@@ -27,14 +27,14 @@ def test_specification_us19_not_found(monkeypatch):
     manager = specification_make_manager(monkeypatch)
     assert manager.change_asset_status("999", "assigned") == "Asset not found"
 
-#US20
+#US20: record reason for change - condition blackbox technique
 def test_specification_us20_end_to_end_reason_attached(monkeypatch):
     manager = specification_make_manager(monkeypatch)
     manager.change_asset_status("1", "assigned")
     assert manager.record_reason_for_change("1", "Loan") == "Reason recorded successfully"
     assert manager.assets["1"].history[-1]["reason"] == "Loan"
 
-#US21
+#US21: View asset status history - loop blackbox technique
 def test_specification_us21_returns_history_after_change(monkeypatch):
     manager = specification_make_manager(monkeypatch)
     manager.change_asset_status("1", "assigned")
@@ -44,7 +44,7 @@ def test_specification_us21_returns_history_after_change(monkeypatch):
     assert hist[-1]["to"] == "assigned"
     assert hist[-1]["reason"] == "Loan"
 
-#US22
+#US22: set depreciation rate - condition blackbox technique
 def test_specification_us22_set_rate_success(monkeypatch):
     manager = specification_make_manager(monkeypatch)
     assert manager.set_depreciation_rate(0.1) == "Depreciation rate updated successfully"
@@ -54,7 +54,7 @@ def test_specification_us22_set_rate_out_of_range(monkeypatch):
     manager = specification_make_manager(monkeypatch)
     assert manager.set_depreciation_rate(150) == "Rate must be inbetween values 0 and 100"
 
-#US25
+#US25: export asset data to json - condition blackbox technique
 def test_specification_us25_export_success(monkeypatch, tmp_path):
     manager = specification_make_manager(monkeypatch)
     out_file = tmp_path / "export.json"
@@ -67,7 +67,7 @@ def test_specification_us25_export_success(monkeypatch, tmp_path):
     assert isinstance(data, list) #list format
     assert any(d.get("id") == "1" for d in data)
 
-#US26
+#US26: import asset data from json - condition blackbox technique
 def test_specification_us26_import_success(monkeypatch, tmp_path):
     manager = specification_make_manager(monkeypatch)
 
@@ -99,7 +99,7 @@ def test_specification_us26_import_success(monkeypatch, tmp_path):
     assert "3" in manager.assets  # imported new asset
     assert "1" in manager.assets  # still exists
 
-#US26
+#US27: create back on exit - condition blackbox technique
 def test_us27_backup_success(monkeypatch, tmp_path):
     manager = specification_make_manager(monkeypatch)
 
