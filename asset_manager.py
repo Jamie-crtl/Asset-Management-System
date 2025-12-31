@@ -714,6 +714,9 @@ class AssetManager:
                 print("S - Import asset data from JSON")
                 print("T - Export asset data to JSON")
                 print("U - Flag low value assets")
+                print("V - Change asset status")
+                print("W - Add reason to last status change")
+                print("X - Calculate current value")
 
             print("J - Search asset by name")
             print("K - Filter by category")
@@ -746,6 +749,7 @@ class AssetManager:
                     "asset_id": id_choice,
                     "name": name_choice,
                     "category": category_choice,
+                    "value":value_choice,
                     "status": status_choice,
                     "assigned_to": assignee_choice,
                     "history": []
@@ -858,6 +862,21 @@ class AssetManager:
                 threshold_choice = input("State the threshold. ").strip()
                 print(self.flag_low_value_assets(threshold_choice))
 
+            elif choice == "V":
+                asset_id = input("State the asset ID: ").strip()
+                new_status = input("State new status (available/assigned/disposed): ").strip()
+                print(self.change_asset_status(asset_id, new_status))
+
+            elif choice == "W":
+                asset_id = input("State the asset ID: ").strip()
+                reason = input("State the reason: ").strip()
+                print(self.record_reason_for_change(asset_id, reason))
+
+            elif choice == "X":
+                asset_id = input("State the asset ID: ").strip()
+                years = input("State years: ").strip()
+                print(self.calculate_current_value(asset_id, years))
+
 
             # Help command
             elif choice == "H":
@@ -865,6 +884,7 @@ class AssetManager:
 
             # Exit
             elif choice == "0":
+                print(self.create_backup_on_exit())
                 break
 
             else:
@@ -929,9 +949,6 @@ class AssetManager:
         print("S: Import asset data from JSON - Import asset data from a JSON file")
         print("T: Export asset data from JSON - Export asset data to a JSON file")
         print("U: Flag low value assets - Flag assets with value below a certain threshold")
-
-
-
-
-# NEED TO ADD ALL FUNCTIONS THAT WE WILL BE IMPLEMENTING
-# WE NEED THIS FOR THE REPORT AT THE END
+        print("V: Change asset status - Status details available/assigned/disposed")
+        print("W: Add reason to last status change - Manually record change for asset ID")
+        print("X: Calculate current value - Calculate current value for asset")
