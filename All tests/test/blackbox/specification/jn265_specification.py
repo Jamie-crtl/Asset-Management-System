@@ -180,3 +180,25 @@ def test_us35_config_file_support_missing_file_loads_defaults(monkeypatch, tmp_p
     assert config["backup_file"] == "assets_backup.json"
     assert config["depreciation_rate"] == 0.0
     assert config["max_backups"] == 5
+
+
+#US36 - Help command
+def test_us36_help_command_displays_commands(monkeypatch):
+    manager = make_manager(monkeypatch, [])
+
+    #catches displayed output
+    printed = []
+    monkeypatch.setattr(builtins, "print", lambda *args, **kwargs: printed.append(" ".join(map(str, args))))
+
+    manager.help_command()
+
+    output = "\n".join(printed)
+
+    #title
+    assert "Help: List of available commands" in output
+
+    #sample of commands
+    assert "A: Create new asset - Create a new asset with a name, category, value and status" in output
+    assert "B: List all assets - List all current assets and their fields" in output
+    assert "P: View inventory summary report - Shows a report of all assets summarised by category and status" in output
+    assert "U: Flag low value assets - Flag assets with value below a certain threshold" in output
