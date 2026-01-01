@@ -107,7 +107,7 @@ def test_us34_run_text_menu_invalid_input(monkeypatch):
     manager = make_manager(monkeypatch, [])
 
     #simulate invalid input followed by exit command
-    inputs = iter(["X", "0"])
+    inputs = iter(["Z", "0"])
     # replaces input() to simulate user interaction
     monkeypatch.setattr(builtins, "input", lambda _: next(inputs))
 

@@ -621,7 +621,7 @@ class AssetManager:
                 return "Asset is missing history and/or value"
 
             if not asset.history:
-                return "No report history available"
+                return self.display_error_message("No report history available")
 
             original_value = asset.history[0]
             current_value = asset.value
