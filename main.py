@@ -15,6 +15,7 @@ def main():
     #}) #used to create an asset
     #print("saved assets:",len(manager.assets))
 
+    manager.config_file_support("config.json")
     role = input("Enter role (admin/user): ").strip().lower()
     manager.run_text_menu(role)
 
