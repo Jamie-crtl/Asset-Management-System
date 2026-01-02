@@ -1,5 +1,7 @@
 # Asset Management System - README (Run & Test guide)
 
+- Public GitHub link: https://github.com/Jamie-crtl/Asset-Management-System
+
 # 1 Requirements: 
 Python: 3.10+ (3.11 is fine)
 Testing framework and Coverage tools: pytest , coverage
