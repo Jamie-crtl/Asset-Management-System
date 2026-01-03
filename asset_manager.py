@@ -34,12 +34,13 @@ class AssetManager:
             return "error: missing required fields"
         try:
             new_asset = Asset(
-                id = asset_data["asset_id"],
-                name = asset_data["name"],
-                category = asset_data["category"],
-                value = asset_data["value"],
-                status = asset_data["status"],
-                history = asset_data["history"]
+                id=asset_data["asset_id"],
+                name=asset_data["name"],
+                category=asset_data["category"],
+                value=asset_data["value"],
+                status=asset_data["status"],
+                assigned_to=asset_data.get("assigned_to"),
+                history=asset_data.get("history", [])
             )
         except KeyError as e:
             return "missing required fields"
@@ -738,26 +739,38 @@ class AssetManager:
                 id_choice = input("Enter asset ID: ").strip()
                 name_choice = input("Enter asset name: ").strip()
                 category_choice = input("Enter asset category: ").strip()
-                value_choice = input("Enter asset value: ").strip()
+                value_choice_raw = input("Enter asset value: ").strip()
                 status_choice = input("Enter asset status: ").strip()
-                assignee_choice = input("Enter asset assignee (leave blank if none: ").strip()
+                assignee_choice = input("Enter asset assignee (leave blank if none): ").strip()
 
                 if assignee_choice == "":
                     assignee_choice = None
+
+                # Convert value to a number early to catch bad input
+                try:
+                    value_choice = float(value_choice_raw)
+                except ValueError:
+                    print("Create failed: value must be a number")
+                    continue
 
                 asset_data = {
                     "asset_id": id_choice,
                     "name": name_choice,
                     "category": category_choice,
-                    "value":value_choice,
+                    "value": value_choice,
                     "status": status_choice,
                     "assigned_to": assignee_choice,
                     "history": []
                 }
 
-                self.create_new_asset(asset_data)
-                self.log_crud_action("CREATE", id_choice)
-                print("Asset created successfully")
+                result = self.create_new_asset(asset_data)
+
+                # Only log + print success if an actual asset is created
+                if isinstance(result, Asset):
+                    self.log_crud_action("CREATE", id_choice)
+                    print("Asset created successfully")
+                else:
+                    print(f"Create failed: {result}")
 
             # List assets
             elif choice == "B":
