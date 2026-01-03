@@ -17,4 +17,16 @@ class Asset:
         self.assigned_to = assigned_to
         self.history = history if history is not None else []
 
+    def __str__(self):
+        return (
+            f"ID: {self.id} | "
+            f"Name: {self.name} | "
+            f"Category: {self.category} | "
+            f"Value: £{self.value} | "
+            f"Status: {self.status} | "
+            f"Assigned to: {self.assigned_to}"
+        )
+
+    __repr__ = __str__
+
 # Need to update this with any other required fields later on
