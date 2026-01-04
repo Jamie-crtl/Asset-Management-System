@@ -13,12 +13,12 @@ def make_manager(monkeypatch, assets_list): # creates an AssetManager instance w
 def test_us04_random_robustness_test(monkeypatch): # repeatedly updates each asset with random values, to see if they succeed or not (stability)
     assets = []
     for i in range(10):
-        assets.append(Asset(str(i), f"Asset{i}", "other", random.randint(0, 1000), "available", None, []))
+        assets.append(Asset(str(i), f"Asset{i}", "other", random.randint(0, 1000), "available", None, [])) #creates 10 valid assets with unique ID's and random values
 
-    m = make_manager(monkeypatch, assets)
+    m = make_manager(monkeypatch, assets) # used to simulate a realistic dataset using monkey
 
     for i in range(10):
-        ok = m.update_asset_field(str(i), "value", random.randint(0, 2000))
+        ok = m.update_asset_field(str(i), "value", random.randint(0, 2000)) # repeatedly updates each asset with random values
         assert ok is True
 
 
