@@ -1,38 +1,17 @@
 [
   {
     "id": "1",
-    "name": "Asset 1",
-    "category": "property",
-    "value": 500,
+    "name": "Laptop",
+    "category": "other",
+    "value": 900,
     "status": "available",
     "assigned_to": null,
-    "history": []
-  },
-  {
-    "id": "2",
-    "name": "Asset 2",
-    "category": "vehicle",
-    "value": 5000000,
-    "status": "available",
-    "assigned_to": "bob",
-    "history": []
-  },
-  {
-    "id": "3",
-    "name": "Asset 3",
-    "category": "property",
-    "value": 500,
-    "status": "available",
-    "assigned_to": null,
-    "history": []
-  },
-  {
-    "id": "5",
-    "name": "Asset 3",
-    "category": "property",
-    "value": 500,
-    "status": "available",
-    "assigned_to": null,
-    "history": []
+    "history": [
+      {
+        "action": "unassign",
+        "user": "alice",
+        "timestamp": "2026-01-04 10:50:36.299106"
+      }
+    ]
   }
 ]
